@@ -1,0 +1,591 @@
+﻿XTI/MCLK 数字输入     晶振输入或者主时钟输入（MCLK）
+BCLK   数字输入/输出  数字音频位时钟，下拉
+DACDAT 数字输入       DAC数字音频数据输入
+DACLRC 数字输入/输出  DAC采样率左/右时钟，下拉
+ADCDAT 数字输出       ADC数字音频数据输出
+ADCLRC 数字输入/输出  ADC采样率左/右时钟，下拉
+
+MODE   数字输入       控制接口选择，上拉
+CSB    数字输入       3线MCU或者2线MCU地址选择，低电平有效，上拉
+
+DE1开发板中，MODE 和 CSB 接地。
+MODE接地，通过I2C总线控制WM8731。
+
+DE1 和 DE2 的例子里是从模式
+DE1_synthesizer
+DE2_synthesizer
+
+DE2 里有音频输入的例子。
+DE2_SD_Card_Audio
+
+DE2-115 里有音频输入的例子。
+DE2_115_Audio
+DE2_115_SD_Card_Audio_Player
+
+https://github.com/armstrm5/AudioVisualizer
+https://audiovisualizer.wordpress.com/audio-processing/
+
+// 选择 从模式 48KHz 16bit 左右声道 左对齐 MSB LSB：起始地址为最高位，最后地址为最低位。
+parameter	REF_CLK			=	18432000;	//	18.432	MHz
+parameter	SAMPLE_RATE		=	48000;		//	48		KHz
+parameter	DATA_WIDTH		=	16;		//	16		Bits
+parameter	CHANNEL_NUM		=	2;		//	Dual Channel
+
+oAUD_BCK 是 48KHz 的位采样信号
+oAUD_LRCK 是 48KHz 的左右声道采样信号
+
+生成的时钟仅仅32个周期，无法完成Line In数据采集。改为16+2 + 16+2个周期。
+oAUD_BCK,
+oAUD_LRCK,
+
+
+声音有干扰声音，上传几次后消失。原因待查，可能是声音芯片中的寄存器未清零。
+
+
+WM8731_v4.9.pdf
+WM7831寄存器设置.xlsx
+
+49、50、51、52、53页 寄存器图表。
+38页 Mode Audio Interface 工作模式 左右对齐、16/20/24/32位、Master/Slave Mode
+41页 Audio Data Sampling Rates 采样速度 关于采样频率的计算
+
+对照 I2C_AV_Config.v 中音频芯片的设置来理解数据采样。
+	Dummy_DATA	:	LUT_DATA	<=	16'h0000;
+	REG_REST	   :	LUT_DATA	<=	16'h1E00;
+	SET_LIN_L	:	LUT_DATA	<=	16'h001A;
+	SET_LIN_R	:	LUT_DATA	<=	16'h021A;
+	SET_HEAD_L	:	LUT_DATA	<=	16'h047B;
+	SET_HEAD_R	:	LUT_DATA	<=	16'h067B;
+	A_PATH_CTRL	:	LUT_DATA	<=	16'h08F8;
+	D_PATH_CTRL	:	LUT_DATA	<=	16'h0A06;
+	POWER_ON	   :	LUT_DATA	<=	16'h0C00;
+	SET_FORMAT	:	LUT_DATA	<=	16'h0E01;
+	SAMPLE_CTRL	:	LUT_DATA	<=	16'h1002;
+	SET_ACTIVE	:	LUT_DATA	<=	16'h1201;
+	default		:	LUT_DATA	<=	16'h0000;
+
+上述参数调整。
+	A_PATH_CTRL	:	LUT_DATA	<=	16'h0814;
+DACSEL 1
+INSEL 1
+
+上电复位后控制寄存器里的值不是0，而是一些默认的设置，软件复位后，所有的都是零了
+8731一共11个寄存器，保守起见，每个都设置一遍最好。
+
+INSEL 输入从 0  Line In  1 Microphone
+
+SIDETONE DACSEL BYPASS 输出音源选择
+
+
+主模式(master mode) WM8731 向外部提供时钟
+从模式(slave mode) WM8731 使用外部时钟
+
+MSB LSB：起始地址为最高位，最后地址为最低位。
+LSB MSB：起始地址为最低位，最后地址为最高位。
+
+
+LRC 下拉为左通道，上拉为右通道
+DAT 数据先低位
+
+数据在DACLRCK的下降沿后BCLK的第一个上升沿就有效
+
+左对齐模式，数据在DACLRCK的下降沿后BCLK的第一个上升沿就有效。
+右对齐模式，数据最高位和DACLRCK的下降沿对齐。不在以DACLRCK的高低电平来区分左右声道了。数据时连续的。
+
+
+-------------------------------------------------
+判断键盘按键。读取 6800h 的低6位。1100_0000
+
+ROM:2EFD sub_2EFD:                               ; CODE XREF: ROM:0040j
+ROM:2EFD                                         ; sub_2EB8+Dp ...
+ROM:2EFD
+ROM:2EFD ; FUNCTION CHUNK AT ROM:05D7 SIZE 00000099 BYTES
+ROM:2EFD ; FUNCTION CHUNK AT ROM:2FD7 SIZE 00000044 BYTES
+ROM:2EFD
+ROM:2EFD                 ld      a, (6800h)
+ROM:2F00                 or      0C0h ; '
+ROM:2F02                 cpl
+ROM:2F03                 cp      0
+ROM:2F05                 jr      z, loc_2F0E
+ROM:2F07                 call    sub_2F28
+ROM:2F0A                 or      a
+ROM:2F0B                 jp      nz, loc_5D7
+
+-------------------------------------------------
+
+# VZREAD.C中的算法是采样最小值到最大值的距离，来判断波长。
+# 问题是方波的最小值和最大值的位置不稳定，特别是高精度采样时。
+
+CRUN 372Eh
+CLOAD 3656h
+CSAVE 34A9h
+
+-------------------------------------------------
+调试记录
+
+通过设置断点观察
+
+(*keep*)wire trap = CPU_RD && (CPU_A == 16'h6800);
+(*keep*)wire trap = CPU_RD && (CPU_A == 16'h37B0);
+
+命令 CRUN 读磁带
+反复在 sub_378F 循环读取
+37BE
+3796
+37A5
+37AC
+37B7
+
+0 的长度不足
+ROM:37B0                 ld      b, 52h ; 'R'
+ROM:37B2
+ROM:37B2 loc_37B2:                               ; CODE XREF: sub_378F:loc_37B2j
+ROM:37B2                 djnz    $
+ROM:37B4                 ld      a, (6800h)
+ROM:37B7                 bit     6, a
+ROM:37B9                 jr      nz, loc_37C4
+
+-------------------------------------------------
+
+ROM:358C ; =============== S U B R O U T I N E =======================================
+ROM:358C
+ROM:358C
+ROM:358C sub_358C:                               ; CODE XREF: sub_3558p
+ROM:358C                                         ; ROM:3660p ...
+ROM:358C                 ld      b, 10h
+ROM:358E                 ld      de, 7A9Dh
+ROM:3591                 ld      a, (hl)
+ROM:3592                 cp      3Ah ; ':'
+ROM:3594                 jr      z, loc_35A8
+ROM:3596                 or      a
+ROM:3597                 jr      z, loc_35A8
+ROM:3599                 rst     8
+ROM:359A
+ROM:359A loc_359A:                               ; CODE XREF: sub_358C+1Aj
+ROM:359A                 ld      (word_B77E), hl
+ROM:359D                 jr      z, loc_35A8
+ROM:359F                 inc     hl
+ROM:35A0                 cp      22h ; '"'
+ROM:35A2                 jr      z, loc_35A8
+ROM:35A4                 ld      (de), a
+ROM:35A5                 inc     de
+ROM:35A6                 djnz    loc_359A+1
+ROM:35A8
+ROM:35A8 loc_35A8:                               ; CODE XREF: sub_358C+8j
+ROM:35A8                                         ; sub_358C+Bj ...
+ROM:35A8                 xor     a
+ROM:35A9                 ld      (de), a
+ROM:35AA                 ld      a, 11h
+ROM:35AC                 sub     b
+ROM:35AD                 ld      (byte_7AD6), a
+ROM:35B0                 ret
+ROM:35B0 ; End of function sub_358C
+ROM:35B0
+ROM:35B1
+ROM:35B1 ; =============== S U B R O U T I N E =======================================
+ROM:35B1
+ROM:35B1
+ROM:35B1 sub_35B1:                               ; CODE XREF: ROM:3664p
+ROM:35B1                                         ; sub_3B68+Bp
+ROM:35B1                 ld      a, (byte_784C)
+ROM:35B4                 or      a
+ROM:35B5                 ret     nz
+ROM:35B6                 ld      a, (byte_783B)
+ROM:35B9                 bit     3, a
+ROM:35BB                 jr      z, loc_35C8
+ROM:35BD                 and     0F7h ; '
+ROM:35BF                 ld      (byte_783B), a
+ROM:35C2                 ld      (6800h), a
+ROM:35C5                 call    sub_3292
+ROM:35C8
+ROM:35C8 loc_35C8:                               ; CODE XREF: sub_35B1+Aj
+ROM:35C8                 ld      hl, 71FFh
+ROM:35CB                 ld      (word_7820), hl
+ROM:35CE                 ld      a, 1Fh
+ROM:35D0                 ld      (byte_78A6), a
+ROM:35D3                 ld      a, (byte_7AE5)
+ROM:35D6                 cp      81h ; '
+ROM:35D8                 ret     nz
+ROM:35D9                 dec     a
+ROM:35DA                 ld      (byte_7AE5), a
+ROM:35DD                 ld      (byte_7AE6), a
+ROM:35E0                 ret
+ROM:35E0 ; End of function sub_35B1
+ROM:35E0
+ROM:35E1 ; ---------------------------------------------------------------------------
+ROM:35E1                 ld      hl, 3842h
+ROM:35E4                 call    sub_37F4
+
+ROM:35E7 ; =============== S U B R O U T I N E =======================================
+ROM:35E7
+ROM:35E7
+ROM:35E7 sub_35E7:                               ; CODE XREF: sub_35E7+8j
+ROM:35E7                                         ; sub_35E7+Dj ...
+ROM:35E7                 call    sub_3AF8
+ROM:35EA                 ld      a, (6800h)
+ROM:35ED                 bit     6, a
+ROM:35EF                 jr      nz, sub_35E7
+ROM:35F1
+ROM:35F1 loc_35F1:                               ; CODE XREF: sub_35E7+11j
+ROM:35F1                 call    sub_378F
+ROM:35F4                 jr      c, sub_35E7
+ROM:35F6                 bit     0, a
+ROM:35F8                 jr      z, loc_35F1
+ROM:35FA                 ld      b, 7
+ROM:35FC
+ROM:35FC loc_35FC:                               ; CODE XREF: sub_35E7+1Aj
+ROM:35FC                 call    sub_378F
+ROM:35FF                 jr      c, sub_35E7
+ROM:3601                 djnz    loc_35FC
+ROM:3603                 cp      80h ; '€'
+ROM:3605                 jr      nz, sub_35E7
+ROM:3607
+ROM:3607 loc_3607:                               ; CODE XREF: sub_35E7+28j
+ROM:3607                 call    sub_3775
+ROM:360A                 jp      c, sub_35E7
+ROM:360D                 cp      80h ; '€'
+ROM:360F                 jr      z, loc_3607
+ROM:3611                 ld      b, 4
+ROM:3613
+ROM:3613 loc_3613:                               ; CODE XREF: sub_35E7+37j
+ROM:3613                 cp      0FEh ; '
+ROM:3615                 jp      nz, sub_35E7
+ROM:3618                 call    sub_3775
+ROM:361B                 jp      c, sub_35E7
+ROM:361E                 djnz    loc_3613
+ROM:3620                 call    sub_3775
+ROM:3623                 ld      (byte_7AD2), a
+ROM:3626                 ld      hl, 7AB2h
+ROM:3629                 ld      b, 12h
+ROM:362B
+ROM:362B loc_362B:                               ; CODE XREF: sub_35E7+4Cj
+ROM:362B                 call    sub_3775
+ROM:362E                 ld      (hl), a
+ROM:362F                 or      a
+ROM:3630                 jr      z, loc_3638
+ROM:3632                 inc     hl
+ROM:3633                 djnz    loc_362B
+ROM:3635                 jp      sub_35E7
+ROM:3638 ; ---------------------------------------------------------------------------
+ROM:3638
+ROM:3638 loc_3638:                               ; CODE XREF: sub_35E7+49j
+ROM:3638                 ld      hl, 385Ah
+ROM:363B                 call    sub_37F4
+ROM:363E                 ld      hl, 7AB2h
+ROM:3641                 call    sub_3814
+ROM:3644                 ld      hl, 7AB2h
+ROM:3647                 ld      de, 7A9Dh
+ROM:364A
+ROM:364A loc_364A:                               ; CODE XREF: sub_35E7+6Cj
+ROM:364A                 ld      a, (de)
+ROM:364B                 or      a
+ROM:364C                 ret     z
+ROM:364D                 cp      (hl)
+ROM:364E                 jp      nz, sub_35E7
+ROM:3651                 inc     hl
+ROM:3652                 inc     de
+ROM:3653                 jr      loc_364A
+ROM:3653 ; End of function sub_35E7
+ROM:3653
+ROM:3655 ; ---------------------------------------------------------------------------
+ROM:3655                 ret
+ROM:3656 ; ---------------------------------------------------------------------------
+ROM:3656
+ROM:3656 BAS_CLOAD_3656:
+ROM:3656                 push    hl
+ROM:3657                 ld      hl, 7839h
+ROM:365A                 res     6, (hl)
+ROM:365C                 res     3, (hl)
+ROM:365E                 pop     hl
+ROM:365F
+ROM:365F loc_365F:                               ; CODE XREF: ROM:3735j
+ROM:365F                                         ; ROM:373Fj
+ROM:365F                 di
+ROM:3660                 call    sub_358C
+ROM:3663                 push    hl
+ROM:3664                 call    sub_35B1
+ROM:3667 ; START OF FUNCTION CHUNK FOR sub_3F73
+ROM:3667
+ROM:3667 loc_3667:                               ; CODE XREF: sub_3F73-856j
+ROM:3667                                         ; sub_3F73-848j
+ROM:3667                 ld      hl, 3842h
+ROM:366A                 call    sub_37F4
+ROM:366D
+ROM:366D loc_366D:                               ; CODE XREF: sub_3F73-8FEj
+ROM:366D                 call    sub_35E7
+ROM:3670                 ld      a, (byte_7AD2)
+ROM:3673                 cp      0F2h ; '
+ROM:3675                 jr      z, loc_366D
+ROM:3677                 ld      hl, 3860h
+ROM:367A                 call    loc_3804
+ROM:367D                 ld      ix, 7823h
+ROM:3681                 call    sub_3868
+ROM:3684                 jp      c, loc_3711
+ROM:3687                 push    hl
+ROM:3688                 sbc     hl, de
+ROM:368A                 jp      c, loc_3711
+ROM:368D                 ld      (word_781E), de
+ROM:3691                 push    hl
+ROM:3692                 pop     bc
+ROM:3693                 pop     hl
+ROM:3694                 ld      a, (byte_7839)
+ROM:3697                 bit     3, a
+ROM:3699                 jp      nz, loc_3742
+ROM:369C
+ROM:369C loc_369C:                               ; CODE XREF: sub_3F73-8CCj
+ROM:369C                 call    sub_3F73
+ROM:369F                 ld      (de), a
+ROM:36A0                 call    sub_388E
+ROM:36A3                 inc     de
+ROM:36A4                 dec     bc
+ROM:36A5                 ld      a, c
+ROM:36A6                 or      b
+ROM:36A7                 jr      nz, loc_369C
+ROM:36A9                 call    sub_3775
+ROM:36AC                 cp      (ix+0)
+ROM:36AF                 jp      nz, loc_3711
+ROM:36B2                 call    sub_3775
+ROM:36B2 ; END OF FUNCTION CHUNK FOR sub_3F73
+ROM:36B2 ; ---------------------------------------------------------------------------
+ROM:36B5                 db 0DDh ; 
+ROM:36B6 ; ---------------------------------------------------------------------------
+ROM:36B6                 cp      (hl)
+ROM:36B7                 ld      bc, 11C2h
+ROM:36BA                 scf
+ROM:36BB                 ld      (word_78F9), hl
+ROM:36BE                 ei
+ROM:36BF                 ld      a, 0Dh
+ROM:36C1                 call    sub_308B
+ROM:36C4                 ld      a, (byte_7AD2)
+ROM:36C7                 cp      0F1h ; '
+ROM:36C9                 jr      nz, loc_36CF
+ROM:36CB                 ld      hl, (word_781E)
+ROM:36CE                 jp      (hl)
+ROM:36CF ; ---------------------------------------------------------------------------
+ROM:36CF
+ROM:36CF loc_36CF:                               ; CODE XREF: ROM:36C9j
+ROM:36CF                                         ; ROM:3769j
+ROM:36CF                 ld      hl, 1929h
+ROM:36D2                 call    sub_28A7
+ROM:36D5                 ld      hl, (word_78A4)
+ROM:36D8                 push    hl
+ROM:36D9                 ld      hl, 7839h
+ROM:36DC                 bit     6, (hl)
+ROM:36DE                 jr      nz, loc_36E3
+ROM:36E0                 jp      loc_1AE8
+ROM:36E3 ; ---------------------------------------------------------------------------
+ROM:36E3
+ROM:36E3 loc_36E3:                               ; CODE XREF: ROM:36DEj
+ROM:36E3                 ld      hl, 7839h
+ROM:36E6                 res     6, (hl)
+ROM:36E8                 pop     de
+ROM:36E9                 call    sub_1AFC
+ROM:36EC                 call    unk_79B5
+ROM:36EF                 call    sub_1B5D
+ROM:36F2                 call    unk_79B8
+ROM:36F5                 ld      hl, 0FFFFh
+ROM:36F8                 ld      (word_78A2), hl
+ROM:36FB                 ld      hl, 79E8h
+ROM:36FE                 ld      de, 570h
+ROM:3701
+ROM:3701 loc_3701:                               ; CODE XREF: ROM:3708j
+ROM:3701                 ld      a, (de)
+ROM:3702                 ld      (hl), a
+ROM:3703                 or      a
+ROM:3704                 jr      z, loc_370A
+ROM:3706                 inc     hl
+ROM:3707                 inc     de
+ROM:3708                 jr      loc_3701
+ROM:370A ; ---------------------------------------------------------------------------
+ROM:370A
+ROM:370A loc_370A:                               ; CODE XREF: ROM:3704j
+ROM:370A                 ld      hl, 79E7h
+ROM:370D                 xor     a
+ROM:370E                 jp      loc_1A81
+ROM:3711 ; ---------------------------------------------------------------------------
+ROM:3711 ; START OF FUNCTION CHUNK FOR sub_3F73
+ROM:3711
+ROM:3711 loc_3711:                               ; CODE XREF: sub_3F73-8EFj
+ROM:3711                                         ; sub_3F73-8E9j ...
+ROM:3711                 ld      hl, 384Ah
+ROM:3714                 ei
+ROM:3715                 call    sub_28A7
+ROM:3718                 di
+ROM:3719                 ld      a, (byte_784C)
+ROM:371C                 or      a
+ROM:371D                 jp      nz, loc_3667
+ROM:3720                 ld      hl, 71FFh
+ROM:3723                 ld      (word_7820), hl
+ROM:3726                 ld      a, 1Fh
+ROM:3728                 ld      (byte_78A6), a
+ROM:372B                 jp      loc_3667
+ROM:372B ; END OF FUNCTION CHUNK FOR sub_3F73
+ROM:372E ; ---------------------------------------------------------------------------
+ROM:372E
+ROM:372E BAS_CRUN_372E:
+ROM:372E                 push    hl
+ROM:372F                 ld      hl, 7839h
+ROM:3732                 set     6, (hl)
+ROM:3734                 pop     hl
+ROM:3735                 jp      loc_365F
+ROM:3738 ; ---------------------------------------------------------------------------
+ROM:3738
+ROM:3738 BAS_VERIFY_3738:
+ROM:3738                 push    hl
+ROM:3739                 ld      hl, 7839h
+ROM:373C                 set     3, (hl)
+ROM:373E                 pop     hl
+ROM:373F                 jp      loc_365F
+ROM:3742 ; ---------------------------------------------------------------------------
+ROM:3742 ; START OF FUNCTION CHUNK FOR sub_3F73
+ROM:3742
+ROM:3742 loc_3742:                               ; CODE XREF: sub_3F73-8DAj
+ROM:3742                 ex      de, hl
+ROM:3743                 call    sub_3775
+ROM:3746                 cp      (hl)
+ROM:3747                 jr      z, loc_3752
+ROM:3749                 ld      hl, 376Ch
+ROM:374C                 call    sub_28A7
+ROM:374F                 jp      loc_183
+ROM:3752 ; ---------------------------------------------------------------------------
+ROM:3752
+ROM:3752 loc_3752:                               ; CODE XREF: sub_3F73-82Cj
+ROM:3752                 inc     hl
+ROM:3753                 dec     bc
+ROM:3754                 ld      a, c
+ROM:3755                 or      b
+ROM:3755 ; END OF FUNCTION CHUNK FOR sub_3F73
+ROM:3755 ; ---------------------------------------------------------------------------
+ROM:3756                 db  20h
+ROM:3757 ; ---------------------------------------------------------------------------
+ROM:3757                 ex      de, hl
+ROM:3758                 ld      hl, 7839h
+ROM:375B                 res     3, (hl)
+ROM:375D                 ld      hl, 376Ch
+ROM:3760                 call    sub_28A7
+ROM:3763                 ld      hl, 380h
+ROM:3766                 call    sub_28A7
+ROM:3769                 jp      loc_36CF
+ROM:376C ; ---------------------------------------------------------------------------
+ROM:376C                 dec     c
+ROM:376D                 ld      d, (hl)
+ROM:376E                 ld      b, l
+ROM:376F                 ld      d, d
+ROM:3770                 ld      c, c
+ROM:3771                 ld      b, (hl)
+ROM:3772                 ld      e, c
+ROM:3773                 jr      nz, sub_3775
+ROM:3775
+ROM:3775 ; =============== S U B R O U T I N E =======================================
+ROM:3775
+ROM:3775
+ROM:3775 sub_3775:                               ; CODE XREF: sub_35E7:loc_3607p
+ROM:3775                                         ; sub_35E7+31p ...
+ROM:3775                 push    bc
+ROM:3776                 push    de
+ROM:3777                 ld      b, 8
+ROM:3779
+ROM:3779 loc_3779:                               ; CODE XREF: sub_3775+9j
+ROM:3779                 call    sub_378F
+ROM:377C                 jr      c, loc_378C
+ROM:377E                 djnz    loc_3779
+ROM:3780                 pop     de
+ROM:3781                 pop     bc
+ROM:3782                 ld      (byte_7AD3), a
+ROM:3785                 call    sub_3AF8
+ROM:3788                 ld      a, (byte_7AD3)
+ROM:378B                 ret
+ROM:378C ; ---------------------------------------------------------------------------
+ROM:378C
+ROM:378C loc_378C:                               ; CODE XREF: sub_3775+7j
+ROM:378C                 pop     de
+ROM:378D                 pop     bc
+ROM:378E                 ret
+ROM:378E ; End of function sub_3775
+ROM:378E
+ROM:378F
+ROM:378F ; =============== S U B R O U T I N E =======================================
+ROM:378F
+ROM:378F
+ROM:378F sub_378F:                               ; CODE XREF: sub_35E7:loc_35F1p
+ROM:378F                                         ; sub_35E7:loc_35FCp ...
+ROM:378F                 push    bc
+ROM:3790
+ROM:3790 loc_3790:                               ; CODE XREF: sub_378F+33j
+ROM:3790                 ld      bc, 7FFh
+ROM:3793
+ROM:3793 loc_3793:                               ; CODE XREF: sub_378F+Ej
+ROM:3793                                         ; sub_378F+18j ...
+ROM:3793                 ld      a, (6800h)
+ROM:3796                 bit     6, a
+ROM:3798                 jr      z, loc_37A2
+ROM:379A                 dec     bc
+ROM:379B                 ld      a, c
+ROM:379C                 or      b
+ROM:379D                 jr      nz, loc_3793
+ROM:379F                 pop     bc
+ROM:37A0                 scf
+ROM:37A1                 ret
+ROM:37A2 ; ---------------------------------------------------------------------------
+ROM:37A2
+ROM:37A2 loc_37A2:                               ; CODE XREF: sub_378F+9j
+ROM:37A2                 ld      a, (6800h)
+ROM:37A5                 bit     6, a
+ROM:37A7                 jr      nz, loc_3793
+ROM:37A9                 ld      a, (6800h)
+ROM:37AC                 bit     6, a
+ROM:37AE                 jr      nz, loc_3793
+ROM:37B0                 ld      b, 52h ; 'R'
+ROM:37B2
+ROM:37B2 loc_37B2:                               ; CODE XREF: sub_378F:loc_37B2j
+ROM:37B2                 djnz    $
+ROM:37B4                 ld      a, (6800h)
+ROM:37B7                 bit     6, a
+ROM:37B9                 jr      nz, loc_37C4
+ROM:37BB
+ROM:37BB loc_37BB:                               ; CODE XREF: sub_378F+31j
+ROM:37BB                 ld      a, (6800h)
+ROM:37BE                 bit     6, a
+ROM:37C0                 jr      z, loc_37BB
+ROM:37C2                 jr      loc_3790
+ROM:37C4 ; ---------------------------------------------------------------------------
+ROM:37C4
+ROM:37C4 loc_37C4:                               ; CODE XREF: sub_378F+2Aj
+ROM:37C4                 ld      b, 5Ah ; 'Z'
+ROM:37C6                 ld      c, 0
+ROM:37C8
+ROM:37C8 loc_37C8:                               ; CODE XREF: sub_378F:loc_37CFj
+ROM:37C8                 ld      a, (6800h)
+ROM:37CB                 bit     6, a
+ROM:37CD                 jr      z, loc_37DA
+ROM:37CF
+ROM:37CF loc_37CF:                               ; CODE XREF: sub_378F+50j
+ROM:37CF                                         ; sub_378F+57j ...
+ROM:37CF                 djnz    loc_37C8
+ROM:37D1
+ROM:37D1 loc_37D1:                               ; CODE XREF: sub_378F+63j
+ROM:37D1                 ld      a, c
+ROM:37D2                 dec     a
+ROM:37D3                 rra
+ROM:37D4                 rl      d
+ROM:37D6                 pop     bc
+ROM:37D7                 ld      a, d
+ROM:37D8                 or      a
+ROM:37D9                 ret
+
+-------------------------------------------------
+
+WM8731带有一个片上时钟发生器，支持多种时钟模式。通过一个12MHz时钟，该器件可以直接生成44.1kHz、48kHz和96kHz等采样率，以及MP3标准定义的其他采样率，完全不需要一个独立的锁相环（phase locked loop）或晶振。支持其他公用的主时钟频率，例如12.288MHz
+
+
+WM8731 通过5线连接，bclk为bit时钟的控制，DACLRC/ADCLRC 为其数据采集速率，DACDAT 和ADCDAT 为数字和模拟端，通过AD出来的数据进入FPGA中进行进行处理，通过FPGA处理过后的数据输出DA内。
+
+
+DE2的音频输入/输出由Wolfson公司的低功耗立体声音24位音频编/解码芯片WM8731完成。WM8731的音频采样速率为8～96?kHz可调；提供2线与3线两种与主控制器的接口方式；支持四种音频数据格式：I2S模式、左对齐模式、右对齐模式和DSP模式。
+
+WM8731包含了线路输入、麦克风输入及耳机输出。两路线路输入RLINEIN和LLINEIN能以1.5dB的步距在+12～?34.5dB范围内进行对数音量调节，完成A/D转换后，还可以进行高通数字滤波，有效去除输入中的直流成分。一路麦克风输入可以在?6～34dB范围内进行音量调节。这三路模拟输入都有单独的静音功能。D/A转换器输出、线路输入旁路及麦克风输入经过侧音电路后可相加作为输出，可以直接驱动线路输出(LOUT和ROUT)，也可以通过耳机放大器输出，以驱动耳机(RHPOUT和LHPOUT)。耳机放大电路的增益可以在+6～?73dB范围内以1dB步距进行调整。
+
+DE2音频部分电路如图所示。DE2平台上的LINEOUT(J3)接在经过耳机放大器放大的耳机输出上，可以直接驱动耳机。LINEIN(J2)经过隔直电容输入，而MICIN(J1)则直接输入。
+
+WM8731的MODE脚接地，选择了2线控制器接口，控制器通过I2C总线控制WM8731，图中的I2C_SCLK和I2C_SDAT接口是从FPGA引出的I2C总线，与视频解码器共用控制总线。2线模式下，通过引脚CSB选择WM8731在I2C总线上的地址，若CSB引脚接地，则读地址为0x34，写地址为0x35。总线数据B[15:0]中，B[15:9]是WM8731中控制寄存器的地址，B[8:0]是寄存器中的数值。
+

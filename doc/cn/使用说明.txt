@@ -1,0 +1,77 @@
+﻿开关0 加速模式 TURBO_SPEED
+开关1 加载 DOS ROM
+
+键盘功能：上下左右，右Shift，Esc模拟Ctrl-Break
+Ctrl+F12 系统复位 reset
+button0 系统复位 reset
+
+左line in录音输入
+左line out录音输出
+
+右line out喇叭输出
+
+vz 可以通过 WAV2VZ.exe 转换为 wav 文件。
+
+================================
+
+虚拟磁带
+敲入命令 CRUN
+（下步改进，自动输入CRUN命令）
+F1 播放 RAM 缓冲区的磁带数据
+F9 停止播放
+
+可以通过software目录下的emu_cass_key_gui.exe上传vz磁带文件
+
+================================
+
+虚拟键盘
+通过串口通信软件，如 putty
+设置 9600 8
+插入LF
+
+特殊命令
+按键      操作
+~         播放虚拟磁带
+Backspace 左移动
+Ctrl+C    Ctrl+Break
+Return    Return
+
+可以接受的字符输入
+数字 大写 符号 图形字符（对应的小写）
+
+================================
+编译项目
+目前支持的开发板
+友晶的 ALTERA DE0
+友晶的 ALTERA DE1
+友晶的 ALTERA DE2
+友晶的 ALTERA DE2-70
+友晶的 ALTERA DE2-115
+
+编译前，需要修改源文件 LASER310_FPGA\rtl\LASER310_TOP.v
+
+//`define	DE0
+`define	DE1
+//`define	DE2
+//`define	DE2_70
+//`define	DE2_115
+
+打开对应的选项。
+
+
+通过 mif 文件生成ROM。
+php gen_mif.php rom\VZ200.FNT charrom.mif
+php gen_mif.php rom\VZ200_4K.FNT charrom_4k.mif
+php gen_mif.php rom\vtechv20.u12 sysrom.mif
+php gen_mif.php rom\vzdos.rom dosrom.mif
+
+
+生成默认的模拟磁带数据:
+php vz2mif.php vz\BASIC_P1.5C.vz cass_ram_4k.mif
+php vz2mif.php vz\BASIC_P1.5C.vz cass_ram.mif
+php vz2mif.php vz\MONITORR.vz cass_ram.mif
+php vz2mif.php vz\SYSTEM-B..vz cass_ram.mif
+php vz2mif.php vz\PUCKMAN.vz cass_ram.mif
+
+也可以通过命令
+vz2mif.exe 02.vz 02.mif

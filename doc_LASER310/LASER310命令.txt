@@ -1,0 +1,5 @@
+﻿
+CSAVE "文件名"
+CLOAD "文件名"
+CRUN
+

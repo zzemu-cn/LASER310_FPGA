@@ -1,0 +1,52 @@
+﻿环境：Windows 10 64位版本。
+软件：php
+
+一、php 安装设置
+    转换程序是用 php 编写的，需要安装 php 解释程序。
+    通过php官方网站下载。
+    http://php.net/
+    https://windows.php.net/download/
+
+   下载最新版本
+   https://windows.php.net/downloads/releases/php-7.3.1-nts-Win32-VC15-x64.zip
+   解压缩到 C:\php 目录，并加入到系统执行路径PATH中。
+
+   运行php需要安装对应的MS的VC运行库。
+   https://aka.ms/vs/15/release/VC_redist.x64.exe
+   https://aka.ms/vs/15/release/VC_redist.x86.exe
+
+   在windows命令行执行 php -v 看是否能够执行。
+
+二、对字库文件进行调整
+    这里有个特例，就是需要对字库文件进行调整。
+    LASER310的字符点阵（8 x 12点阵256个字符）行数不是2的倍数，不转换，编写视频模块很困难。
+
+三、把 rom 转换为对应的 mif 文件
+    fpga 中的 rom 加载有两种方式：一是把 rom 直接写入 flash 芯片。另一种就是用fpga芯片自带块ram来仿真rom。
+    为了便于不同开发板之间的移植，该设计方案采用的是块内存来实现rom。
+    编译（综合）项目前，需要把 rom 的二进制文件转换为源文件。
+
+    例如，在项目目录为D:\LASER310_FPGA时，命令如下：
+    D:
+    cd D:\LASER310_FPGA\rtl
+    php gen_mif.php rom\VZ200_4K.FNT charrom_4k.mif
+    php gen_mif.php rom\vtechv20.u12 sysrom.mif
+    php gen_mif.php rom\vzdos.rom dosrom.mif
+
+    这三条命令分别把字库字模文件、系统rom文件、磁盘rom文件转换为FPGA的rtl源代码。
+
+四、生成模拟磁带模块的预装载数据
+    模拟磁带模块可以设置一个默认的装载磁带数据。可以通过命令把 vz 文件转换为FPGA的rtl源代码。
+    例如，在项目目录为D:\LASER310_FPGA时，命令如下：
+    D:
+    cd D:\LASER310_FPGA\rtl
+    php vz2mif.php vz\PUCKMAN.AC3A.vz cass_ram.mif
+    php vz2mif.php vz\SYSTEM-B.vz cass_ram_4k.mif
+    php vz2mif.php vz\MONITORR.vz cass_ram_4k.mif
+
+    根据选定的模拟磁带缓冲区大小，生成对应的文件。
+    cass_ram.mif
+    cass_ram_4k.mif
+    cass_ram_8k.mif
+    cass_ram_16k.mif
+

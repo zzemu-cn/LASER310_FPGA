@@ -1,0 +1,169 @@
+# -------------------------------------------------------------------------- #
+#
+# Copyright (C) 1991-2013 Altera Corporation
+# Your use of Altera Corporation's design tools, logic functions 
+# and other software and tools, and its AMPP partner logic 
+# functions, and any output files from any of the foregoing 
+# (including device programming or simulation files), and any 
+# associated documentation or information are expressly subject 
+# to the terms and conditions of the Altera Program License 
+# Subscription Agreement, Altera MegaCore Function License 
+# Agreement, or other applicable license agreement, including, 
+# without limitation, that your use is for the sole purpose of 
+# programming logic devices manufactured by Altera and sold by 
+# Altera or its authorized distributors.  Please refer to the 
+# applicable agreement for further details.
+#
+# -------------------------------------------------------------------------- #
+#
+# Quartus II 64-Bit
+# Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Full Version
+# Date created = 20:53:38  November 28, 2018
+#
+# -------------------------------------------------------------------------- #
+#
+# Notes:
+#
+# 1) The default values for assignments are stored in the file:
+#		de0_assignment_defaults.qdf
+#    If this file doesn't exist, see file:
+#		assignment_defaults.qdf
+#
+# 2) Altera recommends that you do not modify this file. This
+#    file is updated automatically by the Quartus II software
+#    and any changes you make may be lost or overwritten.
+#
+# -------------------------------------------------------------------------- #
+
+
+set_global_assignment -name FAMILY "Cyclone III"
+set_global_assignment -name DEVICE EP3C16F484C6
+set_global_assignment -name TOP_LEVEL_ENTITY LASER310_TOP
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION "13.0 SP1"
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "20:53:38  NOVEMBER 28, 2018"
+set_global_assignment -name LAST_QUARTUS_VERSION "13.0 SP1"
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
+set_global_assignment -name USE_CONFIGURATION_DEVICE ON
+set_global_assignment -name CYCLONEIII_CONFIGURATION_DEVICE EPCS4
+set_global_assignment -name CRC_ERROR_OPEN_DRAIN OFF
+set_global_assignment -name FORCE_CONFIGURATION_VCCIO ON
+set_global_assignment -name RESERVE_ALL_UNUSED_PINS_WEAK_PULLUP "AS INPUT TRI-STATED"
+set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS "HALF VCCIO" -rise
+set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS "HALF VCCIO" -fall
+set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -rise
+set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -fall
+set_location_assignment PIN_B1 -to LED[9]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[9]
+set_location_assignment PIN_B2 -to LED[8]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[8]
+set_location_assignment PIN_C2 -to LED[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[7]
+set_location_assignment PIN_C1 -to LED[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[6]
+set_location_assignment PIN_E1 -to LED[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[5]
+set_location_assignment PIN_F2 -to LED[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[4]
+set_location_assignment PIN_H1 -to LED[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[3]
+set_location_assignment PIN_J3 -to LED[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[2]
+set_location_assignment PIN_J2 -to LED[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[1]
+set_location_assignment PIN_J1 -to LED[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[0]
+set_location_assignment PIN_G4 -to SWITCH[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SWITCH[3]
+set_location_assignment PIN_H6 -to SWITCH[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SWITCH[2]
+set_location_assignment PIN_H5 -to SWITCH[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SWITCH[1]
+set_location_assignment PIN_J6 -to SWITCH[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SWITCH[0]
+set_location_assignment PIN_F1 -to BUTTON_N[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to BUTTON_N[2]
+set_location_assignment PIN_G3 -to BUTTON_N[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to BUTTON_N[1]
+set_location_assignment PIN_H2 -to BUTTON_N[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to BUTTON_N[0]
+set_location_assignment PIN_J21 -to VGA_GREEN[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_GREEN[3]
+set_location_assignment PIN_K17 -to VGA_GREEN[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_GREEN[2]
+set_location_assignment PIN_J17 -to VGA_GREEN[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_GREEN[1]
+set_location_assignment PIN_H22 -to VGA_GREEN[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_GREEN[0]
+set_location_assignment PIN_L21 -to VGA_HS
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_HS
+set_location_assignment PIN_L22 -to VGA_VS
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_VS
+set_location_assignment PIN_H21 -to VGA_RED[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_RED[3]
+set_location_assignment PIN_H20 -to VGA_RED[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_RED[2]
+set_location_assignment PIN_H17 -to VGA_RED[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_RED[1]
+set_location_assignment PIN_H19 -to VGA_RED[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_RED[0]
+set_location_assignment PIN_K18 -to VGA_BLUE[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_BLUE[3]
+set_location_assignment PIN_J22 -to VGA_BLUE[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_BLUE[2]
+set_location_assignment PIN_K21 -to VGA_BLUE[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_BLUE[1]
+set_location_assignment PIN_K22 -to VGA_BLUE[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_BLUE[0]
+set_location_assignment PIN_G21 -to CLK50MHZ
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to CLK50MHZ
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "2.5 V"
+set_global_assignment -name CYCLONEII_RESERVE_NCEO_AFTER_CONFIGURATION "USE AS REGULAR IO"
+set_global_assignment -name ENABLE_SIGNALTAP OFF
+set_global_assignment -name USE_SIGNALTAP_FILE stp1.stp
+set_location_assignment PIN_P22 -to PS2_KBCLK
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to PS2_KBCLK
+set_location_assignment PIN_P21 -to PS2_KBDAT
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to PS2_KBDAT
+set_location_assignment PIN_U22 -to UART_RXD
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to UART_RXD
+set_location_assignment PIN_U21 -to UART_TXD
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to UART_TXD
+set_location_assignment PIN_V22 -to UART_RTS
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to UART_RTS
+set_location_assignment PIN_V21 -to UART_CTS
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to UART_CTS
+set_global_assignment -name SLD_FILE "D:/LASER310_FPGA/prj_de0/stp1_auto_stripped.stp"
+set_global_assignment -name VERILOG_FILE ../rtl/dos_rom_altera.v
+set_global_assignment -name VERILOG_FILE ../rtl/EMU_CASS_KEY.v
+set_global_assignment -name VERILOG_FILE ../rtl/CLK10MHZ_PLL.v
+set_global_assignment -name VERILOG_FILE "../rtl/verilog-uart/uart_tx.v"
+set_global_assignment -name VERILOG_FILE "../rtl/verilog-uart/uart_rx.v"
+set_global_assignment -name VERILOG_FILE "../rtl/verilog-uart/uart.v"
+set_global_assignment -name VERILOG_FILE ../rtl/cass_ram_8k_altera.v
+set_global_assignment -name VERILOG_FILE ../rtl/svga/PIXEL_GEN.v
+set_global_assignment -name VERILOG_FILE ../rtl/tv80/tv80s.v
+set_global_assignment -name VERILOG_FILE ../rtl/tv80/tv80_reg.v
+set_global_assignment -name VERILOG_FILE ../rtl/tv80/tv80_mcode.v
+set_global_assignment -name VERILOG_FILE ../rtl/tv80/tv80_core.v
+set_global_assignment -name VERILOG_FILE ../rtl/tv80/tv80_alu.v
+set_global_assignment -name VERILOG_FILE ../rtl/ps2_keyboard_glb.v
+set_global_assignment -name VERILOG_FILE ../rtl/svga/PIXEL_DISPLAY.v
+set_global_assignment -name VERILOG_FILE ../rtl/vram_altera.v
+set_global_assignment -name SDC_FILE DE0.sdc
+set_global_assignment -name VERILOG_FILE ../rtl/svga/VIDEO_OUT.v
+set_global_assignment -name VERILOG_FILE ../rtl/svga/SVGA_TIMING_GENERATION.v
+set_global_assignment -name VERILOG_FILE ../rtl/svga/CHAR_GEN_ROM.v
+set_global_assignment -name VERILOG_FILE ../rtl/svga/CHAR_GEN.v
+set_global_assignment -name VERILOG_FILE ../rtl/sys_rom_altera.v
+set_global_assignment -name VERILOG_FILE ../rtl/reset_de.v
+set_global_assignment -name VERILOG_FILE ../rtl/ram_altera.v
+set_global_assignment -name VERILOG_FILE ../rtl/mc6847_vga.v
+set_global_assignment -name VERILOG_FILE ../rtl/LASER310_TOP.v
+set_global_assignment -name VERILOG_FILE ../rtl/char_rom_4k_altera.v
+set_global_assignment -name SIGNALTAP_FILE stp1.stp
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

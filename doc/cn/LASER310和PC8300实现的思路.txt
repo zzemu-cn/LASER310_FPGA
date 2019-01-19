@@ -1,0 +1,365 @@
+﻿LASER310和PC8300实现的思路
+
+选型：
+ZX81 Zilog Z80 3.25 MHz
+
+z80 软核心暂定为 nextz80。原因：较新、支持未归档的指令。
+
+nextz80 控制信号一般是高电平有效，和z80处理器不同。
+tv80 控制信号一般是低电平有效，同z80处理器。
+
+Verilog HDL
+https://opencores.org/projects/nextz80
+https://github.com/freecores/nextz80
+
+Verilog HDL
+https://www.librecores.org/hutch31/tv80
+https://opencores.org/projects/tv80
+https://github.com/hutch31/tv80
+
+VHDL
+http://opencores.org/project,t80
+https://github.com/lipro/t80
+
+Verilog HDL
+https://github.com/freecores/y80e
+https://opencores.org/projects/y80e
+
+Laser310参考 CoCo3FPGA
+pc8300参考 ZX8X_MiST 以及一些zx spectrum实现
+http://alexfreed.com/FPGApple/DE1_ZX
+
+LASER310硬件：
+Z80A
+VDG 视频信号发生器 MC6847
+存储器 8片 DRAM --- 4116
+显示存储 1片 SRAM --- 6116
+ROM 27128
+LASER310中Z80A的 ~WAIT ~NMI ~BUSRQ 接 +5V
+
+《Laser310微电脑软硬件系统剖析》--彭辛岷一书第四章中有代码解析。
+
+内存：
+尽可能不使用外部存储芯片，方便移植到其它开发板。
+LASER310 CHAEROM 3K SYSROM 16K RAM 16K VRAM 2K
+PC8300  CHAEROM 1K SYSROM 8K RAM 16K(实机1K)
+
+
+Laser310微电脑软硬件系统剖析-彭辛岷 是基于 BASIC 2.0 版本
+以下内容也基于 BASIC 2.0 版本
+
+框架思路：
+第1步，实现视频部分，可以看到屏幕显示。
+第2步，CPU + ROM + RAM 可以可以运行。
+第3步，视频和CPU ROM RAM 连接调试。
+第4步，加入键盘。
+
+
+准备工作：
+
+1、通过 mif 文件生成ROM。
+php gen_mif.php rom\VZ200.FNT charrom.mif
+php gen_mif.php rom\VZ200_4K.FNT charrom_4k.mif
+php gen_mif.php rom\vtechv20.u12 sysrom.mif
+
+php gen_mif.php rom\pc8300\8300_fnt.bin charrom.mif
+php gen_mif.php rom\pc8300\8300_org.rom sysrom.mif
+
+
+进度：
+第1步，实现视频部分，可以看到屏幕显示。
+
+PC8300 的视频部分需要 z80 参与，调试要先把 cpu 和内存调通。
+在 ZX80 和 ZX81 中，video 输出需要 Z80 芯片参与完成。在 ZX80 中，在程序运行中屏幕空白，直到程序暂停等待输入时屏幕才有内容。ZX81 对 ZX80 进行了改进，ZX81 有两种操作模式。FAST mode 同 ZX80 一样，程序运行中屏幕空白；SLOW mode（速度大约只有1/4），程序只在电子枪从屏幕底部到顶部时（垂直回扫）才运行。
+
+ZX81
+NEC Z-80A, 3.25MHz
+22 X 32 text
+or
+64 × 48 pixels graphics mode
+
+Sinclair ZX Spectrum
+Zilog Z80A 3.5MHz
+32 x 24 text (8 colors)
+256 x 192 graphics
+
+3.25MHz*8 = 26MHz
+3.5MHz*8 = 28MHz
+由于视频部分与cpu相互配合，对视频频率选择就要综合考虑。
+
+
+LASER310 视频部分相对独立，视频频率选择常见的 25MHz
+
+时钟频率：
+640x480@59.94Hz(60Hz)：每场对应525个行周期(525=10+2+480+33),其中480为显示行。每场有场同步信号,该脉冲宽度为2个行周期的负脉冲，每显示行包括800点时钟,其中640点为有效显示区,每一行有一个行同步信号，该脉冲宽度为96个点时钟。由此可知：行频为525*59.94=31469Hz,需要点时钟频率：525*800*59.94约25MHz 40ns
+
+VGA 800x600@60Hz所需时钟频率：VGA_CLK=1056x628x60=39790080~40MHz
+
+
+MC6847模式
+TEXT 32x16 (每个字符 8x12)  32*8=256 16*12=192
+64x64 128x64 128x96 128x192 256x192
+字库 256 个 8*12
+为了简化设计(避免乘3操作)，字库的点阵转化为 8*16，即3KB变为4KB
+
+256*192显示时映射到640*480每个点占2*2
+512*384外的部分留空
+
+AG 0 字符 1 图形
+AS (Semigraphics) SG4 SG6
+EXT 0 内部字库 1 外接字库
+GM2 GM1 GM0 对应 4色 CG1 CG2 CG3 CG6 2色 RG1 RG2 RG3 RG6
+
+640*480 25MHz 40ns
+3.77us      Sync pulse lenght   94.25
+1.89us      Back porch          47.25
+25.17us     Active video time  625
+0.94us      Front porch         23.5
+
+//  640 X 480 @ 60Hz with a 25.175MHz pixel clock
+`define H_ACTIVE	640	// pixels
+`define H_FRONT_PORCH	16	// pixels
+`define H_SYNCH		96	// pixels
+`define H_BACK_PORCH	48	// pixels
+`define H_TOTAL		800	// pixels
+
+`define V_ACTIVE	480	// lines
+`define V_FRONT_PORCH	11	// lines
+`define V_SYNCH		2	// lines
+`define V_BACK_PORCH	31	// lines
+`define V_TOTAL		524	// lines
+
+`define CLK_MULTIPLY	2	// 50 * 2/4 = 25.000 MHz
+`define CLK_DIVIDE	4
+
+初步分析coco3fpga视频模块，发现修改到MC6847比较困难。自己写一个更容易些。
+先使用调试好的 vga 视频模块 asciivga-s3，然后逐步修改。
+视频部分直接使用了 8K VRAM，便于扩充。
+
+视频部分先暂时放下，跳到第二部，加入 cpu 等。
+
+第2步，CPU + ROM + RAM 可以可以运行。
+
+系统程序入口 0000H，即开机RESET后从 0000H 处的程序开始执行。
+
+由于采用的同步内存，读写需要等1个内存时钟周期。
+LASER310 的 ~WAIT 是高电平，意味着内存读写需要在一个CPU时钟周期内完成。
+
+如果有内存操作，下个时钟周期为WAIT，随后的一个周期取消。
+CPU_WAIT <= CPU_WAIT?1'b0:CPU_MREQ;
+
+把时钟1个CPU时钟周期划分为3段，第1、2为建立信号，第3个完成读写。
+
+2018-12-03
+
+写入操作的 WR 信号，对于同步内存可以直接使用；对于异步内存，需要使用锁存器REG来提供信号，防止误操作。
+
+程序不向显存写内容。调试发现，对IO 的操作反复是向6800h 写入00h。
+反查执行序列 2180 => 3903 => 1B0C => 1B0E => 1AFC ==> 1B01 ==> 0000h
+
+用 ida 反汇编 rom，分析原因。
+
+1AE9- CDFC1A	CALL 1AFC；修改从新行开始的所有行指针。
+1ABC- CDB579	CALL 79B5；DOS出
+
+CALL 1AFC 出现问题 ret z 返回到了 0000h
+
+初步判断是 B800 开始的 2K 地址设为了 RAM 区，导致ram内存长度计算错误，sp设置错误，堆栈返回地址出错。
+
+sp 值 B7CF
+16K rom 和 16K ram 的地址写错了
+.address(CPU_A[12:0]),
+应该为
+.address(CPU_A[13:0]),
+
+ram 内存大小计算仍有问题。
+00AC- 31F879 LD SP，79F8；暂设堆栈地址，因下面CLL指令需用堆栈。
+00AF- CD8F1B CALL 1B8F；利用BASIC指针初始化程序，设定堆栈、字符串库等指针，以备临时使用。
+00B2- CDC901 CALL 01C9；清除显示屏。
+
+CALL 1B8F 中的计算内存大小错误。
+
+1B9B 21B578 LD HL,78B5
+1B9C 22B378 LD (78B3),HL
+
+NEXTZ80 CPU取指令错误
+1B9B 应该取到 21B578
+实际取到 21B5
+
+
+STAGE 指令执行的进度（指令周期）
+加了一行
+next_stage = 1;
+
+取下一个字节
+next_stage = 1;
+
+//				-----------------------		LD rr,nn  --------------------
+					4'b0001: 			// LD rr,nn, stage1
+
+
+							3'b10_0, 3'b11_1: begin		// BC, DE, HL, stage3, SP stage4
+								ALU160_SEL = 1;			// pc
+								WE 		= 6'b010x00;	// PC
+								next_stage = 1;
+
+
+
+替换成 tv80 可以看到开始屏幕
+至少 NEXTZ80 的 LD HL, 这条命令有问题。
+
+
+2018-12-06
+
+DE1 的片上内存不足，暂时在 DE0 上开发。等后续加入 SRAM 的支持。
+
+
+2018-12-10
+
+键盘问题解决。
+每秒钟50次中断扫描键盘。读6800H判断是否有按键，然后逐行扫描得到对应的键位。
+
+VGA 模块
+基础是 SVGA_TIMING_GENERATION.v 中 pixel_count 和 line_count 分别对水平点和行计数。
+为了提高速度，原 CHAR_GEN.v 设计，把移位操作划分为 low high 两部分，能够适应更高的频率。因采用较低的分辨率，对原方案进行了简化。
+
+在垂直回扫发生是锁存显示模式，防止画面抖动。
+
+
+2018-12-13
+
+mame : mc6847.cpp
+
+    Implementation of Motorola 6847 video hardware chip
+
+    Sources:
+    M6847 data sheet
+    M6847T1 info from Rainbow magazine (10/1986-12/1986)
+
+
+    AG  AS  INTEXT  INV  GM2  GM1  GM0
+    --  --  ------  ---  ---  ---  ---
+     0   0       0    0    X    X    X  Internal Alphanumerics
+     0   0       0    1    X    X    X  Internal Alphanumerics Inverted
+     0   0       1    0    X    X    X  External Alphanumerics
+     0   0       1    1    X    X    X  External Alphanumerics Inverted
+     0   1       0    X    X    X    X  Semigraphics 4
+     0   1       1    X    X    X    X  Semigraphics 6
+     1   X       X    X    0    0    0  Graphics CG1 (64x64x4)    (16 bpr)
+     1   X       X    X    0    0    1  Graphics RG1 (128x64x2)   (16 bpr)
+     1   X       X    X    0    1    0  Graphics CG2 (128x64x4)   (32 bpr)
+     1   X       X    X    0    1    1  Graphics RG2 (128x96x2)   (16 bpr)
+     1   X       X    X    1    0    0  Graphics CG3 (128x96x4)   (32 bpr)
+     1   X       X    X    1    0    1  Graphics RG3 (128x192x2)  (16 bpr)
+     1   X       X    X    1    1    0  Graphics CG6 (128x192x4)  (32 bpr)
+     1   X       X    X    1    1    1  Graphics RG6 (256x192x2)  (32 bpr)
+
+    Note: The M6847 relies on an external source (typically a 6883 SAM chip)
+    to feed it bytes; so the BPR (bytes per row) figures are effectively
+    suggestions.  Mismatching modes is responsible for the semigraphic modes
+    on the CoCo.
+
+    Timing:    (source Motorola M6847 Manual, experimentation, SockMaster)
+
+    Horizontal Sync:  Total Period: 228 clock cycles
+        @ CLK(0) + DHS_F            - falling edge (high to low)
+        @ CLK(16.5) + DHS_R         - rising edge (low to high)
+        @ CLK(42)                   - left border start
+        @ CLK(71.5)                 - body start
+        @ CLK(199.5)                - right border start
+        @ CLK(228) + DHS_F          - falling edge (high to low)
+        ...
+
+    Field Sync: Total Period 262*228 clock cycles
+        @ CLK(0) + DFS_F            - falling edge (high to low)
+        @ CLK(32*228) + DFS_R       - rising edge (low to high)
+        @ CLK(262*228) + DFS_F      - falling edge (high to low) (262.5 for the M6847Y)
+
+    DHS_F:  550ns
+    DHS_R:  740ns
+    DFS_F:  520ns
+    DFS_R:  500ns
+
+    The M6847T1 is a later variant of the M6847 chip that implements lower
+    case support and some other nifty features.  This chip is in the CoCo 2B.
+    I have not been able to find a pinout diagram for this chip so I am
+    assuming that the extra text modes on the CoCo 2B are activated by the
+    GM2-0 pins.  This needs to be confirmed.
+
+    The MC6847 datasheet states that a scanline is 227.5 clock cycles,
+    but experimentation suggests that it is 228.  The game "Dragon Fire"
+    has a fine tuned loop that runs in 57 clock cycles by the CPU's
+    reckoning (228 actual clock cycles) and would not function correctly
+    if skew existed.  SockMaster has confirmed that scanlines are in
+    fact 228 clock cycles.
+
+    The PAL emulation is little more than having more scanlines; surely
+    there are details that we are missing here.
+
+2018-12-16
+
+字符已经可以正常显示。
+
+2018-12-19
+
+开始对结构进行改动，同时逐渐加入对多种开发板的支持。
+音频信号部分开始着手。
+系统中断：简化处理是直接接到 VGA 的垂直回扫信号，频率60HZ。带来的问题是软件计时器会产生偏差。
+
+另外，在考虑如何用通过串口信号控制Laser310的键盘输入。
+
+
+2018-12-22
+
+开始尝试加入声音支持
+
+
+2018-12-27
+
+声音从 Line In 采集直接回放到 Line Out
+
+声音有干扰声音，上传几次后消失。原因待查，可能是声音芯片中的寄存器未清零。
+
+电路图中的 KB7 功能不理解，待完善。
+
+
+2018-12-31
+
+LASER310 频率为 17.7MHz/5 = 3.54MHz
+
+
+已经加入了扩充键盘功能：上下左右，右Shift，Esc模拟Ctrl-Break
+
+开始着手写 CASS_EMU，模拟磁带输入。当前用于测试，后期可以预装软件，如B文件系统，扩充BASIC。
+
+可以是默认的数据，也可以通过串口上传。
+暂定缓存最大8K。
+使用方式：F1(ram) F2(rom) F3(rom) F4(rom) 键。输入 CRUN 并且开始模拟缓冲区内磁带数据。F5 停止模拟。
+
+生成默认的磁带数据:
+php vz2mif.php vz\F0.PUCKMAN.AC3A.0000.vz cass_ram.mif
+
+
+2018-1-2
+
+LASER310 频率设置为 3.54MHz后，录音输入部分已经可以工作。
+
+I2C_AV_Config.v
+A_PATH_CTRL	:	LUT_DATA	<=	16'h080A;
+缺省值，可以载入录音
+A_PATH_CTRL	:	LUT_DATA	<=	16'h0812;
+关闭BYPASS，打开DACSEL，可以载入录音，和播放
+
+左 line in 音频输入，右 line in 未使用。
+左 line out 喇叭发声，右 line out 录音输入监听。
+
+
+2018-1-3
+
+128 x 64 4色模式已经正常
+
+
+2018-1-18
+
+对数据上传的协议改进，速度已经可以一接受。
+

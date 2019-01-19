@@ -1,0 +1,18 @@
+目录下的两个程序来自《Laser310微电脑软硬件系统剖析》彭辛岷
+
+根据书中的代码建立了两个文件
+LASER_BASIC_P1.5C.txt
+LASER_RENUMBER.txt
+
+然后通过命令 php hex_txt2bin.php 生成
+BASIC_P1.5C.vz
+BASIC_P1.5C.7B04.bin
+
+RENUMBER.vz
+RENUMBER.74D3.bin
+
+bin 只含有数据，可以用来反汇编学习。
+
+由于对原书中的程序字符识别可能出现差错，不能保证生成的程序与原始代码一致。
+
+hex_txt2bin.php 是转换脚本源程序。

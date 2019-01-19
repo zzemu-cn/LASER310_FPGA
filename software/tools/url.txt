@@ -1,0 +1,32 @@
+编译器
+https://nuwen.net/mingw.html
+mingw-16.1.exe
+
+UI库 nana
+https://github.com/cnjinhao/nana
+https://github.com/cnjinhao/nana-demo
+https://sourceforge.net/projects/nanapro/
+http://nanapro.org/zh-cn/documentation/
+http://nanapro.org/zh-cn/documentation/utilities/place.htm
+http://qpcr4vir.github.io/nana-doxy/html/index.html
+nana-1.6.2
+放到 C:\MinGW\x86_64-w64-mingw32
+
+
+串口库
+https://github.com/phtdacosta/serial-lib
+https://github.com/DRSDavidSoft/SerialUART
+https://github.com/ummchen/WinAPI_UART
+https://github.com/fengxun2017/UartPassthroughTool
+https://github.com/DRSDavidSoft/SerialUART
+
+
+工具库
+https://github.com/fmtlib/fmt
+A modern formatting library http://fmtlib.net 
+
+https://github.com/nothings/stb
+https://github.com/jrk/stb
+
+C string utils library (STB style, header-only). 
+https://github.com/r-lyeh/stdstring.h

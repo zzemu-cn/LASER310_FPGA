@@ -1,0 +1,122 @@
+# Copyright (C) 1991-2013 Altera Corporation
+# Your use of Altera Corporation's design tools, logic functions 
+# and other software and tools, and its AMPP partner logic 
+# functions, and any output files from any of the foregoing 
+# (including device programming or simulation files), and any 
+# associated documentation or information are expressly subject 
+# to the terms and conditions of the Altera Program License 
+# Subscription Agreement, Altera MegaCore Function License 
+# Agreement, or other applicable license agreement, including, 
+# without limitation, that your use is for the sole purpose of 
+# programming logic devices manufactured by Altera and sold by 
+# Altera or its authorized distributors.  Please refer to the 
+# applicable agreement for further details.
+
+# Quartus II 64-Bit Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Full Version
+# File: D:\Altera DE2-115\DE2-115_v.3.0.6_SystemCD\DE2_115_demonstrations\DE2_115_USB_DEVICE\HW\DE2_115_USB_DEVICE_LED.csv
+# Generated on: Fri Dec 21 09:48:59 2018
+
+# Note: The column header names should not be changed if you wish to import this .csv file into the Quartus II software.
+
+To,Direction,Location,I/O Bank,VREF Group,I/O Standard,Reserved,Current Strength,Slew Rate,Differential Pair
+CLK50MHZ,Unknown,PIN_Y2,2,B2_N0,3.3-V LVTTL,,,,
+CLK27MHZ,Unknown,PIN_B14,8,B8_N0,3.3-V LVTTL,,,,
+LED[0],Unknown,PIN_E21,7,B7_N0,2.5 V,,,,
+LED[1],Unknown,PIN_E22,7,B7_N0,2.5 V,,,,
+LED[2],Unknown,PIN_E25,7,B7_N1,2.5 V,,,,
+LED[3],Unknown,PIN_E24,7,B7_N1,2.5 V,,,,
+LED[4],Unknown,PIN_H21,7,B7_N2,2.5 V,,,,
+LED[5],Unknown,PIN_G20,7,B7_N1,2.5 V,,,,
+LED[6],Unknown,PIN_G22,7,B7_N2,2.5 V,,,,
+LED[7],Unknown,PIN_G21,7,B7_N1,2.5 V,,,,
+LED[8],Unknown,PIN_F17,7,B7_N2,2.5 V,,,,
+LED[9],Unknown,PIN_G19,7,B7_N2,2.5 V,,,,
+#LEDR[0],Unknown,PIN_G19,7,B7_N2,2.5 V,,,,
+#LEDR[2],Unknown,PIN_E19,7,B7_N0,2.5 V,,,,
+#LEDR[1],Unknown,PIN_F19,7,B7_N0,2.5 V,,,,
+#LEDR[3],Unknown,PIN_F21,7,B7_N0,2.5 V,,,,
+#LEDR[4],Unknown,PIN_F18,7,B7_N1,2.5 V,,,,
+#LEDR[5],Unknown,PIN_E18,7,B7_N1,2.5 V,,,,
+#LEDR[6],Unknown,PIN_J19,7,B7_N2,2.5 V,,,,
+#LEDR[7],Unknown,PIN_H19,7,B7_N2,2.5 V,,,,
+#LEDR[8],Unknown,PIN_J17,7,B7_N2,2.5 V,,,,
+#LEDR[9],Unknown,PIN_G17,7,B7_N1,2.5 V,,,,
+#LEDR[10],Unknown,PIN_J15,7,B7_N2,2.5 V,,,,
+#LEDR[11],Unknown,PIN_H16,7,B7_N2,2.5 V,,,,
+#LEDR[12],Unknown,PIN_J16,7,B7_N2,2.5 V,,,,
+#LEDR[13],Unknown,PIN_H17,7,B7_N2,2.5 V,,,,
+#LEDR[14],Unknown,PIN_F15,7,B7_N2,2.5 V,,,,
+#LEDR[15],Unknown,PIN_G15,7,B7_N2,2.5 V,,,,
+#LEDR[16],Unknown,PIN_G16,7,B7_N2,2.5 V,,,,
+#LEDR[17],Unknown,PIN_H15,7,B7_N2,2.5 V,,,,
+BUTTON_N[0],Unknown,PIN_M23,6,B6_N2,2.5 V,,,,
+BUTTON_N[1],Unknown,PIN_M21,6,B6_N1,2.5 V,,,,
+BUTTON_N[2],Unknown,PIN_N21,6,B6_N2,2.5 V,,,,
+BUTTON_N[3],Unknown,PIN_R24,5,B5_N0,2.5 V,,,,
+SWITCH[0],Unknown,PIN_AB28,5,B5_N1,2.5 V,,,,
+SWITCH[1],Unknown,PIN_AC28,5,B5_N2,2.5 V,,,,
+SWITCH[2],Unknown,PIN_AC27,5,B5_N2,2.5 V,,,,
+SWITCH[3],Unknown,PIN_AD27,5,B5_N2,2.5 V,,,,
+#SWITCH[4],Unknown,PIN_AB27,5,B5_N1,2.5 V,,,,
+#SWITCH[5],Unknown,PIN_AC26,5,B5_N2,2.5 V,,,,
+#SWITCH[6],Unknown,PIN_AD26,5,B5_N2,2.5 V,,,,
+#SWITCH[7],Unknown,PIN_AB26,5,B5_N1,2.5 V,,,,
+#SWITCH[8],Unknown,PIN_AC25,5,B5_N2,2.5 V,,,,
+#SWITCH[9],Unknown,PIN_AB25,5,B5_N1,2.5 V,,,,
+#SWITCH[10],Unknown,PIN_AC24,5,B5_N2,2.5 V,,,,
+#SWITCH[11],Unknown,PIN_AB24,5,B5_N2,2.5 V,,,,
+#SWITCH[12],Unknown,PIN_AB23,5,B5_N2,2.5 V,,,,
+#SWITCH[13],Unknown,PIN_AA24,5,B5_N2,2.5 V,,,,
+#SWITCH[14],Unknown,PIN_AA23,5,B5_N2,2.5 V,,,,
+#SWITCH[15],Unknown,PIN_AA22,5,B5_N2,2.5 V,,,,
+#SWITCH[16],Unknown,PIN_Y24,5,B5_N2,2.5 V,,,,
+#SWITCH[17],Unknown,PIN_Y23,5,B5_N2,2.5 V,,,,
+
+AUD_DACDAT,Unknown,PIN_D1,1,B1_N0,3.3-V LVTTL,,,,
+AUD_DACLRCK,Unknown,PIN_E3,1,B1_N0,3.3-V LVTTL,,,,
+AUD_ADCDAT,Unknown,PIN_D2,1,B1_N0,3.3-V LVTTL,,,,
+AUD_ADCLRCK,Unknown,PIN_C2,1,B1_N0,3.3-V LVTTL,,,,
+AUD_XCK,Unknown,PIN_E1,1,B1_N0,3.3-V LVTTL,,,,
+AUD_BCLK,Unknown,PIN_F2,1,B1_N1,3.3-V LVTTL,,,,
+I2C_SCLK,Unknown,PIN_B7,8,B8_N1,3.3-V LVTTL,,,,
+I2C_SDAT,Unknown,PIN_A8,8,B8_N1,3.3-V LVTTL,,,,
+
+PS2_KBCLK,Unknown,PIN_G6,1,B1_N0,3.3-V LVTTL,,,,
+PS2_KBDAT,Unknown,PIN_H5,1,B1_N1,3.3-V LVTTL,,,,
+#PS2_CLK2,Unknown,PIN_G5,1,B1_N0,3.3-V LVTTL,,,,
+#PS2_DAT2,Unknown,PIN_F5,1,B1_N0,3.3-V LVTTL,,,,
+
+VGA_DAC_BLUE[7],Unknown,PIN_D12,8,B8_N0,3.3-V LVTTL,,,,
+VGA_DAC_BLUE[6],Unknown,PIN_D11,8,B8_N1,3.3-V LVTTL,,,,
+VGA_DAC_BLUE[5],Unknown,PIN_C12,8,B8_N0,3.3-V LVTTL,,,,
+VGA_DAC_BLUE[4],Unknown,PIN_A11,8,B8_N0,3.3-V LVTTL,,,,
+VGA_DAC_BLUE[3],Unknown,PIN_B11,8,B8_N0,3.3-V LVTTL,,,,
+VGA_DAC_BLUE[2],Unknown,PIN_C11,8,B8_N1,3.3-V LVTTL,,,,
+VGA_DAC_BLUE[1],Unknown,PIN_A10,8,B8_N0,3.3-V LVTTL,,,,
+VGA_DAC_BLUE[0],Unknown,PIN_B10,8,B8_N0,3.3-V LVTTL,,,,
+VGA_DAC_GREEN[7],Unknown,PIN_C9,8,B8_N1,3.3-V LVTTL,,,,
+VGA_DAC_GREEN[6],Unknown,PIN_F10,8,B8_N1,3.3-V LVTTL,,,,
+VGA_DAC_GREEN[5],Unknown,PIN_B8,8,B8_N1,3.3-V LVTTL,,,,
+VGA_DAC_GREEN[4],Unknown,PIN_C8,8,B8_N1,3.3-V LVTTL,,,,
+VGA_DAC_GREEN[3],Unknown,PIN_H12,8,B8_N1,3.3-V LVTTL,,,,
+VGA_DAC_GREEN[2],Unknown,PIN_F8,8,B8_N2,3.3-V LVTTL,,,,
+VGA_DAC_GREEN[1],Unknown,PIN_G11,8,B8_N1,3.3-V LVTTL,,,,
+VGA_DAC_GREEN[0],Unknown,PIN_G8,8,B8_N2,3.3-V LVTTL,,,,
+VGA_DAC_RED[7],Unknown,PIN_H10,8,B8_N1,3.3-V LVTTL,,,,
+VGA_DAC_RED[6],Unknown,PIN_H8,8,B8_N2,3.3-V LVTTL,,,,
+VGA_DAC_RED[5],Unknown,PIN_J12,8,B8_N0,3.3-V LVTTL,,,,
+VGA_DAC_RED[4],Unknown,PIN_G10,8,B8_N1,3.3-V LVTTL,,,,
+VGA_DAC_RED[3],Unknown,PIN_F12,8,B8_N1,3.3-V LVTTL,,,,
+VGA_DAC_RED[2],Unknown,PIN_D10,8,B8_N1,3.3-V LVTTL,,,,
+VGA_DAC_RED[1],Unknown,PIN_E11,8,B8_N1,3.3-V LVTTL,,,,
+VGA_DAC_RED[0],Unknown,PIN_E12,8,B8_N1,3.3-V LVTTL,,,,
+VGA_DAC_CLOCK,Unknown,PIN_A12,8,B8_N0,3.3-V LVTTL,,,,
+VGA_DAC_BLANK_N,Unknown,PIN_F11,8,B8_N1,3.3-V LVTTL,,,,
+VGA_DAC_SYNC_N,Unknown,PIN_C10,8,B8_N0,3.3-V LVTTL,,,,
+VGA_HS,Unknown,PIN_G13,8,B8_N0,3.3-V LVTTL,,,,
+VGA_VS,Unknown,PIN_C13,8,B8_N0,3.3-V LVTTL,,,,
+
+UART_CTS,Unknown,PIN_G14,8,B8_N0,3.3-V LVTTL,,,,
+UART_RTS,Unknown,PIN_J13,8,B8_N0,3.3-V LVTTL,,,,
+UART_RXD,Unknown,PIN_G12,8,B8_N1,3.3-V LVTTL,,,,
+UART_TXD,Unknown,PIN_G9,8,B8_N2,3.3-V LVTTL,,,,

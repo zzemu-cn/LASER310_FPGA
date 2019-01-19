@@ -1,0 +1,13 @@
+﻿环境 win10 64位
+
+软件
+Quartus II 13.0 sp1
+
+DE1 光盘 DE1_ControlPanel_V2.1.0 无法使用。
+
+变通的办法：
+DE1 的 flash 可以使用 DE1_v.1.0.2_SystemCD\DE1_demonstrations\DE1_USB_API 来完成。
+先用 HW 上传固件，然后使用 SW 控制 FLASH。
+
+记得先擦除后烧写。
+

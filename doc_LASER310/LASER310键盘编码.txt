@@ -1,0 +1,9 @@
+   KD5 KD4 KD3 KD2 KD1 KD0 …®√Ë”√µÿ÷∑
+A0  R   Q   E       W   T  68FEH
+A1  F   A   D  CTRL S   G  68FDH
+A2  V   Z   C  SHFT X   B  68FBH
+A3  4   1   3       2   5  68F7H
+A4  M  ø’∏Ò £¨      .   N  68EFH
+A5  7   0   8   -   9   6  68DFH
+A6  U   P   I  RETN O   Y  68BFH
+A7  J   £ª  K   :   L   H  687FH

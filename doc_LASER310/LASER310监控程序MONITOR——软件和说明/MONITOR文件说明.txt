@@ -1,0 +1,18 @@
+﻿LASER310监控程序MONITOR文件说明
+
+MONITORR 原版的MONITOR程序
+MONITOR 解密版的MONITOR监控程序
+
+
+MONITOR是一个Laser-310监控程序，这个程序类似于Apple II 的Call-151，可以读写内存，汇编，反汇编等。但是因为太大16K内存的310上基本上只能看ROM的内容，加装了16K/64K卡的机器，用这个程序比较实用。
+
+命令：
+MON 由BASIC进入MONITOR
+E 退出MONITOR返回BASIC
+
+--------------------------------
+
+Monitor发行版是加密的，一加载就自动运行。并且破坏现场。也就是说从monitor里也没法录它自己。
+文件MONITOR是由上海董启文解密录制的。
+原版MONITOR可以用“B文件系统”直接解密。
+MONITOR的使用说明是Bill的笔友张浩写的。

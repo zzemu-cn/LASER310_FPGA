@@ -1,0 +1,129 @@
+# Copyright (C) 1991-2007 Altera Corporation
+# Your use of Altera Corporation's design tools, logic functions 
+# and other software and tools, and its AMPP partner logic 
+# functions, and any output files from any of the foregoing 
+# (including device programming or simulation files), and any 
+# associated documentation or information are expressly subject 
+# to the terms and conditions of the Altera Program License 
+# Subscription Agreement, Altera MegaCore Function License 
+# Agreement, or other applicable license agreement, including, 
+# without limitation, that your use is for the sole purpose of 
+# programming logic devices manufactured by Altera and sold by 
+# Altera or its authorized distributors.  Please refer to the 
+# applicable agreement for further details.
+
+# Quartus II Version 7.2 Build 151 09/26/2007 SJ Full Version
+# File: D:\v1.21\DE2_70_TOP.csv
+# Generated on: Wed Nov 14 23:36:20 2007
+
+# Note: The column header names should not be changed if you wish to import this .csv file into the Quartus II software.
+
+From,To,Assignment Name,Value,Enabled
+,CLK50MHZ,Location,PIN_AD15,Yes
+,CLK27MHZ,Location,PIN_H15,Yes
+
+,AUD_ADCDAT,Location,PIN_E19,Yes
+,AUD_ADCLRCK,Location,PIN_F19,Yes
+,AUD_BCLK,Location,PIN_E17,Yes
+,AUD_DACDAT,Location,PIN_F18,Yes
+,AUD_DACLRCK,Location,PIN_G18,Yes
+,AUD_XCK,Location,PIN_D17,Yes
+,I2C_SCLK,Location,PIN_J18,Yes
+,I2C_SDAT,Location,PIN_H18,Yes
+
+,BUTTON_N[0],Location,PIN_T29,Yes
+,BUTTON_N[1],Location,PIN_T28,Yes
+,BUTTON_N[2],Location,PIN_U30,Yes
+,BUTTON_N[3],Location,PIN_U29,Yes
+
+,LED[0],Location,PIN_W27,Yes
+,LED[1],Location,PIN_W25,Yes
+,LED[2],Location,PIN_W23,Yes
+,LED[3],Location,PIN_Y27,Yes
+,LED[4],Location,PIN_Y24,Yes
+,LED[5],Location,PIN_Y23,Yes
+,LED[6],Location,PIN_AA27,Yes
+,LED[7],Location,PIN_AA24,Yes
+,LED[8],Location,PIN_AJ6,Yes
+,LED[9],Location,PIN_AK5,Yes
+#,oLEDR[0],Location,PIN_AJ6,Yes
+#,oLEDR[1],Location,PIN_AK5,Yes
+#,oLEDR[2],Location,PIN_AJ5,Yes
+#,oLEDR[3],Location,PIN_AJ4,Yes
+#,oLEDR[4],Location,PIN_AK3,Yes
+#,oLEDR[5],Location,PIN_AH4,Yes
+#,oLEDR[6],Location,PIN_AJ3,Yes
+#,oLEDR[7],Location,PIN_AJ2,Yes
+#,oLEDR[8],Location,PIN_AH3,Yes
+#,oLEDR[9],Location,PIN_AD14,Yes
+#,oLEDR[10],Location,PIN_AC13,Yes
+#,oLEDR[11],Location,PIN_AB13,Yes
+#,oLEDR[12],Location,PIN_AC12,Yes
+#,oLEDR[13],Location,PIN_AB12,Yes
+#,oLEDR[14],Location,PIN_AC11,Yes
+#,oLEDR[15],Location,PIN_AD9,Yes
+#,oLEDR[16],Location,PIN_AD8,Yes
+#,oLEDR[17],Location,PIN_AJ7,Yes
+
+,PS2_KBCLK,Location,PIN_F24,Yes
+,PS2_KBDAT,Location,PIN_E24,Yes
+#,PS2_MSCLK,Location,PIN_D26,Yes
+#,PS2_MSDAT,Location,PIN_D25,Yes
+,SWITCH[0],Location,PIN_AA23,Yes
+,SWITCH[1],Location,PIN_AB26,Yes
+,SWITCH[2],Location,PIN_AB25,Yes
+,SWITCH[3],Location,PIN_AC27,Yes
+#,SWITCH[4],Location,PIN_AC26,Yes
+#,SWITCH[5],Location,PIN_AC24,Yes
+#,SWITCH[6],Location,PIN_AC23,Yes
+#,SWITCH[7],Location,PIN_AD25,Yes
+#,SWITCH[8],Location,PIN_AD24,Yes
+#,SWITCH[9],Location,PIN_AE27,Yes
+#,SWITCH[10],Location,PIN_W5,Yes
+#,SWITCH[11],Location,PIN_V10,Yes
+#,SWITCH[12],Location,PIN_U9,Yes
+#,SWITCH[13],Location,PIN_T9,Yes
+#,SWITCH[14],Location,PIN_L5,Yes
+#,SWITCH[15],Location,PIN_L4,Yes
+#,SWITCH[16],Location,PIN_L7,Yes
+#,SWITCH[17],Location,PIN_L8,Yes
+,UART_CTS,Location,PIN_G22,Yes
+,UART_RTS,Location,PIN_F23,Yes
+,UART_RXD,Location,PIN_D21,Yes
+,UART_TXD,Location,PIN_E21,Yes
+,VGA_DAC_BLUE[0],Location,PIN_B16,Yes
+,VGA_DAC_BLUE[1],Location,PIN_C16,Yes
+,VGA_DAC_BLUE[2],Location,PIN_A17,Yes
+,VGA_DAC_BLUE[3],Location,PIN_B17,Yes
+,VGA_DAC_BLUE[4],Location,PIN_C18,Yes
+,VGA_DAC_BLUE[5],Location,PIN_B18,Yes
+,VGA_DAC_BLUE[6],Location,PIN_B19,Yes
+,VGA_DAC_BLUE[7],Location,PIN_A19,Yes
+,VGA_DAC_BLUE[8],Location,PIN_C19,Yes
+,VGA_DAC_BLUE[9],Location,PIN_D19,Yes
+,VGA_DAC_BLANK_N,Location,PIN_C15,Yes
+,VGA_DAC_CLOCK,Location,PIN_D24,Yes
+,VGA_DAC_GREEN[0],Location,PIN_A10,Yes
+,VGA_DAC_GREEN[1],Location,PIN_B11,Yes
+,VGA_DAC_GREEN[2],Location,PIN_A11,Yes
+,VGA_DAC_GREEN[3],Location,PIN_C12,Yes
+,VGA_DAC_GREEN[4],Location,PIN_B12,Yes
+,VGA_DAC_GREEN[5],Location,PIN_A12,Yes
+,VGA_DAC_GREEN[6],Location,PIN_C13,Yes
+,VGA_DAC_GREEN[7],Location,PIN_B13,Yes
+,VGA_DAC_GREEN[8],Location,PIN_B14,Yes
+,VGA_DAC_GREEN[9],Location,PIN_A14,Yes
+,VGA_HS,Location,PIN_J19,Yes
+,VGA_DAC_RED[0],Location,PIN_D23,Yes
+,VGA_DAC_RED[1],Location,PIN_E23,Yes
+,VGA_DAC_RED[2],Location,PIN_E22,Yes
+,VGA_DAC_RED[3],Location,PIN_D22,Yes
+,VGA_DAC_RED[4],Location,PIN_H21,Yes
+,VGA_DAC_RED[5],Location,PIN_G21,Yes
+,VGA_DAC_RED[6],Location,PIN_H20,Yes
+,VGA_DAC_RED[7],Location,PIN_F20,Yes
+,VGA_DAC_RED[8],Location,PIN_E20,Yes
+,VGA_DAC_RED[9],Location,PIN_G20,Yes
+,VGA_DAC_SYNC_N,Location,PIN_B15,Yes
+,VGA_VS,Location,PIN_H19,Yes
+

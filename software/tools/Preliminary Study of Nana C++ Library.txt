@@ -1,0 +1,121 @@
+Preliminary Study of Nana C++ Library
+
+This article is update for Nana 0.8, based on C++11.
+
+Although C++ is a powerful and sytnax-agile language, in fact, many programmers don’t like to do GUI in C++, because it is so difficault to make GUI in C++. Some exsiting C++ GUI frameworks define their own rule that makes you write some stiff code for running, it always causes some problems, such as leaving your code in a deep inheritance hierarchy, making maintenance painful. Now, there is an alternative, Nana C++ Library, a pure C++ library that will guide you in doing GUI with your immense and extensive C++ knowledge/skill/idioms, it makes a great progress in doing GUI in C++.
+
+Easy-to-Learn, Easy-to-Use
+
+How easy to create a Hello World program with Nana?
+
+#include <nana/gui.hpp>
+#include <nana/gui/widgets/label.hpp>
+
+int main()
+{
+    using namespace nana;
+    form fm;
+    label lb(fm, fm.size());
+    lb.caption(L"Hello, World");
+    fm.show();
+    exec();
+}
+
+
+Pretty easy, with understandable codes. Nana brings very simple and reasonable concepts to keep it easy. Secondly, Unlike other frameworks, they make you write stiff code due to name contstraints and syntax constraints. Nana can make your code more straightforward and readable. For example, answering an event.
+
+#include <nana/gui/wvl.hpp>
+#include <nana/gui/widgets/button.hpp>
+
+void clicked(const nana::arg_mouse&)
+{
+    //When the window corresponds to fm is clicked,
+    //this function will be “called”.
+}
+
+int main()
+{
+    using namespace nana::gui;
+    form fm;
+    fm.events().click(clicked);
+    fm.show();
+    exec();
+}
+
+
+The name of clicked function is not name-constrained, you can give it any other name you want. It is more straightforward than implementing an event handler from inheritance. In some situations, we don’t need to care about the parameter of clicked() function, like the example.
+
+void clicked() //NO parameter defined.
+{
+    //When the form is clicked,
+    //this function will be “called”.
+}
+
+fm.events().click(clicked); //Nana allows!
+
+
+Very flexible, and keep your code simple. And this feature can be applied with function object.
+
+What makes Nana so flexible?
+ Nana C++ Library does not contain any “extra compilers” to parse “special syntex”, Nana uses 100% C++ and the template techniques make this library so powerful and flexible. Nana is unlike other template-based library that causes a lot of code bloat and requires programmers have template-skilled, it’s newbie-friendly.
+
+Nana is a complete C++ style library runs on Visual C++ 2013/GCC 4.7 and later.
+
+fm.events().click([]{
+        //When the form is clicked, the object created
+        //by this lambda will be “called”.
+    });
+
+//or
+
+fm.events().click([](const nana::arg_mouse& arg){
+        //When the form is clicked, the object created
+        //by this lambda will be “called”, and I can
+        //read the parameter.
+    });
+
+
+Layout management
+
+Nana provides a extensible and flexiable class for layout management in most cases. Please refer to the Reference Manuals for the details.
+
+Threading
+
+Make easy, Nana is a thread-safe library and accessing a widget between threads is normalized. This is a great feature that makes programmer deliver the event answer to other thread easiler.
+
+#include <nana/gui.hpp>
+#include <nana/threads/pool.hpp>
+
+void foo()
+{
+    //This function will be “called” in other
+    //thread that is created by thread pool.
+}
+
+int main()
+{
+    using namespace nana;
+    using namespace nana::threads;
+
+    pool thrpool;
+    form fm;
+    fm.events().click(pool_push(thrpool, foo));
+    fm.events().click(pool_push(thrpool, []{
+                //A lambda is also allowed.
+            }));
+    fm.show();
+    exec();
+}
+
+
+RAII
+
+There is an important feature as shown in above examples, as soon as a form object is created, its corresponding window is created, and the window is invisible till the show() is called to the form object, as soon as the form object is destructed, its corresponding window is closed, it conforms with the C++ object life-time concept.
+
+Cross-Platform Programming
+
+Nana C++ Library is designed to be used for cross-platform programming. Its frist release is under Windows. Now, the library is basiclly ported to Linux(X11).
+
+The Most Important Feature: Free
+
+Nana C++ Library is an open-source, it’s free for both commerical and non-commerical use.
