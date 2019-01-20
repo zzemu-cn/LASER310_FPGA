@@ -18,6 +18,9 @@ del prj_de2_115\db\*.* /s /q
 del prj_de2_115\incremental_db\*.* /s /q
 @rem del prj_de2_115\output_files\*.* /s /q
 
+del *.pof /s /q
+del *.sof /s /q
+
 del *.fit.summary /s /q
 del *.fit.rpt /s /q
 del *.fit.smsg /s /q
