@@ -1,13 +1,29 @@
-﻿环境 win10 64位
+﻿环境：win10 64位
 
-软件
-Quartus II 13.0 sp1
+工具软件：Quartus II 13.0 sp1
+首先要安装好 Quartus II 13.0 sp1，具体方法这里不介绍。
 
-DE1 光盘 DE1_ControlPanel_V2.1.0 无法使用。
+下载并解压官网提供的随机软件 DE1_v.1.0.2_SystemCD.zip
+http://download.terasic.com/downloads/cd-rom/de1/
 
-变通的办法：
-DE1 的 flash 可以使用 DE1_v.1.0.2_SystemCD\DE1_demonstrations\DE1_USB_API 来完成。
-先用 HW 上传固件，然后使用 SW 控制 FLASH。
+因 DE1 光盘 DE1_ControlPanel_V2.1.0 无法使用，采用了变通的办法来烧写FLASH。
 
-记得先擦除后烧写。
+烧写FLASH步骤如下：
 
+1、准备好要烧写的 LASER310 ROM 文件。
+执行 LASER310_FPGA/rom 目录中的 gen_vzrom.cmd，生成了 LASER310.flash.bin。
+LASER310.flash.bin 这个文件就是要上传烧写的二进制文件，它包含 LASER310 的系统 ROM 和 DOS ROM 两部分。
+
+2、上传控制固件。
+在随机光盘目录 DE1_v.1.0.2_SystemCD\DE1_demonstrations\DE1_USB_API\HW中，打开工程文件 DE1_USB_API.qpf，点 Programmer 打开FPGA上传软件，图见pic1.png。点 Start 上传 DE1_USB_API 的控制固件，完成后，右上角提示 100%，图见pic2.png。
+
+3、使用演示软件烧写FLASH
+打开 DE1_v.1.0.2_SystemCD\DE1_demonstrations\DE1_USB_API\SW\DE1_Control_Panel.exe，图见pic3.png。
+点击菜单 Open 打开端口，可能会出现2个，试试那个可以使用。
+
+进入到 FLASH 功能区，图见pic4.png。
+烧写 FLASH 需要先擦除芯片，然后才能写入数据。
+点击 Chip Erase(40 Sec.)，擦除 FLASH 芯片。
+
+勾选 File Length。
+然后点击 Write a File to FLASH 选择已经准备好的文件 LASER310.flash.bin,开始烧录 FLASH。
