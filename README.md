@@ -1,8 +1,14 @@
 # LASER310 FPGA
 
-Welcome to LASER310_FPGA project. 
+Welcome to LASER310_FPGA project. This project is an attempt to recreate the once famous VZ300/Laser300 computer in 80's on Cyclone based FPGA boards.
 
-supported boards are:
+Features implemented:
+1. MC6847
+2. Cassette input/output emu
+3. Laser310 internal RAM/ROM/DOS ROM
+4. Buzzer output
+
+***Supported boards***
 
 - Terasic DE0
 - Terasic DE1
@@ -10,9 +16,7 @@ supported boards are:
 - Terasic DE2-70
 - Terasic DE2-115
 
-Folder structures:
-
-
+***Folder structures***
 
 doc_LASER310:
 
@@ -47,3 +51,6 @@ BASIC_P1.5C.vz is an extended Basic for Laser 310 developed by XinMin Peng in 80
 MONITORR.vz is an award winning CALL-151 like system monitor tool for Laser 310.
 
 More details on these VZ300/Laser310 softwares to follow.
+
+***Todo***
+
