@@ -7,12 +7,15 @@ Features implemented:
 2. Cassette input/output emu
 3. Laser310 internal RAM/ROM/DOS ROM on flash
 4. Buzzer output
-5. PS/2 keyboard support
-6. 
+5. PS/2 keyboard support (Ctrl+F12 to reset).
+6. 20MHz overclock on SW1
 
-***Todo***
+***Planned***
 1. Super high resolution mode (256*192)
 2. Z80 bus on GPIO mapping.
+3. VZ200 support
+4. 16K/64 RAM module
+5. Enable external ROM with onboard switches at runtime.
 
 ***Supported boards***
 
