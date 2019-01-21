@@ -2,6 +2,9 @@
 
 Welcome to LASER310_FPGA project. This project is an attempt to recreate the once famous VZ300/Laser300 computer in 80's on Cyclone based FPGA boards.
 
+<img src="doc/images/Laser310onVGA.jpeg" alt="Laser310 on VGA" width="400"/>
+
+
 Features implemented:
 1. MC6847 /w VGA output
 2. Cassette input/output emu
