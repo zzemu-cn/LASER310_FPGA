@@ -16,5 +16,5 @@ Notes:
 * System B is compatible with Laser 310 Monitor and DOS Basic 1.2 or any file lives from 7AE9 to B7FF and 7200 to 76FF.
 * L command is NOP on diskless system.
 * W command will create an identical copy of loadded B file, runs well without System B.
-* R/L command, it stores the start address and end address in 77BB and 77BE. After you have loaded your B file, you can use E 
-
+* R/L command, it stores the start address and end address in 77BB and 77BE. They remain unchanged after you exit from System B.
+* 
