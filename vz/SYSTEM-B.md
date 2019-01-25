@@ -17,4 +17,4 @@ Notes:
 * L command is NOP on diskless system.
 * W command will create an identical copy of loadded B file, runs well without System B.
 * R/L command, it stores the start address and end address in 77BB and 77BE. They remain unchanged after you exit from System B.
-* 
+* System B is loadded in high-end of VRAM, MODE(1) command will clean this area.
