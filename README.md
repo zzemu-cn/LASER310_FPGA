@@ -21,8 +21,7 @@ Features implemented:
 5. Enable external ROM with onboard switches at runtime.
 
 ***Screenshots***  
-
-IORQ output n,5 captured on GPIO1
+IORQ output n,5 captured on GPIO1  
 <img src="doc/IORQ_output 5.jpg" alt="IORQ on output"/>  
 
 ***Supported boards***
