@@ -20,6 +20,9 @@ Features implemented:
 4. 16K/64 RAM module
 5. Enable external ROM with onboard switches at runtime.
 
+***Screenshots***  
+<img src="doc/IORQ_output 5.jpg" alt="IORQ on output"/>  
+
 ***Supported boards***
 
 - Terasic DE0
