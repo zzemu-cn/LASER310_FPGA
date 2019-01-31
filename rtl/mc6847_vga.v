@@ -75,7 +75,8 @@ wire	[6:0]	char_line;					// line number on the screen
 
 // graph
 wire	[8:0]	graph_pixel;				// pixel number on the current line
-wire	[9:0]	graph_line;					// line number on the screen
+wire	[9:0]	graph_line_2x;				// line number on the screen
+wire	[9:0]	graph_line_3x;				// line number on the screen
 
 /*
 wire	[11:0]	ROM_ADDRESS;
@@ -104,12 +105,12 @@ always @ (posedge v_synch or negedge RESET_N)
 begin
 	if(!RESET_N)
 	begin
-		LATCHED_AG <= 1'b0;
-		LATCHED_AS <= 1'b0;
-		LATCHED_EXT <= 1'b0;
-		LATCHED_INV <= 1'b0;
-		LATCHED_GM <= 3'b0;
-		LATCHED_CSS <= 1'b0;
+		LATCHED_AG		<=	1'b0;
+		LATCHED_AS		<=	1'b0;
+		LATCHED_EXT		<=	1'b0;
+		LATCHED_INV		<=	1'b0;
+		LATCHED_GM		<=	3'b0;
+		LATCHED_CSS		<=	1'b0;
 	end
 	else
 	begin
@@ -138,7 +139,8 @@ PIXEL_DISPLAY PIXEL_DISPLAY(
 	.subchar_pixel(subchar_pixel),
 	// graph
 	.graph_pixel(graph_pixel),
-	.graph_line(graph_line),
+	.graph_line_2x(graph_line_2x),
+	.graph_line_3x(graph_line_3x),
 	// vram
 	.vram_rd_enable(RD),
 	.vram_addr(DA),
@@ -170,7 +172,8 @@ SVGA_TIMING_GENERATION SVGA_TIMING_GENERATION
 
 	// graph
 	graph_pixel,
-	graph_line
+	graph_line_2x,
+	graph_line_3x
 );
 
 // instantiate the video output mux

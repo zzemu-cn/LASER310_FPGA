@@ -1,7 +1,11 @@
 ﻿开关0 加速模式 TURBO_SPEED
 开关1 加载 DOS ROM
+开关2 扩展绘图模式支持 SHRG
 
-键盘功能：上下左右，右Shift，Esc模拟Ctrl-Break
+开关3...5 地址0000H 16K系统 ROM 切换
+开关6...9 地址4000H 8K ROM 切换
+
+键盘功能：上下左右，右Shift，Esc模拟Ctrl-Break, Backspace左
 Ctrl+F12 系统复位 reset
 button0 系统复位 reset
 
@@ -17,8 +21,8 @@ vz 可以通过 WAV2VZ.exe 转换为 wav 文件。
 虚拟磁带
 敲入命令 CRUN
 （下步改进，自动输入CRUN命令）
-F1 播放 RAM 缓冲区的磁带数据
-F9 停止播放
+F9  播放 RAM 缓冲区的磁带数据
+F10 停止播放
 
 可以通过software目录下的emu_cass_key_gui.exe上传vz磁带文件
 
@@ -64,6 +68,7 @@ php gen_mif.php ..\rom\VZ200.FNT charrom.mif
 php gen_mif.php ..\rom\VZ200_4K.FNT charrom_4k.mif
 php gen_mif.php ..\rom\vtechv20.u12 sysrom.mif
 php gen_mif.php ..\rom\vzdos.rom dosrom.mif
+php gen_mif.php ..\rom\boot_rom.bin boot_rom_6000.mif
 
 
 生成默认的模拟磁带数据:
@@ -82,9 +87,11 @@ vz2mif.exe 02.vz 02.mif
 目前 DE1 和 DE2 开发板需要烧写 FLASH。
 
 首先要生成写入 FLASH 的二进制数据文件。
-直接执行 LASER310_FPGA\rom\gen_vzrom.cmd 可以生成 LASER310.flash.bin 这个文件。
+执行
+ CD flash_build
+ php gen_rom.php 可以生成 flash_rom.bin 这个文件。
 
 对于友晶的DEx系列开发板，厂商提供了烧写 FLASH 的工具 DEx_control_panel，可以在最新的随机光盘文件中找到。
 对于DE1开发板，可以参考“DE1烧写flash的方法.txt”。
-通过FLASH烧写工具，把文件 LASER310.flash.bin 写入开发板。记得先擦除后烧写。
+通过FLASH烧写工具，把文件 flash_rom.bin 写入开发板。记得先擦除后烧写。
 

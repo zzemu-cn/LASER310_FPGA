@@ -180,7 +180,22 @@ set_location_assignment PIN_G12 -to UART_RXD
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to UART_RXD
 set_location_assignment PIN_G9 -to UART_TXD
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to UART_TXD
+set_location_assignment PIN_B7 -to I2C_SCLK
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to I2C_SCLK
+set_location_assignment PIN_A8 -to I2C_SDAT
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to I2C_SDAT
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name VERILOG_FILE ../rtl/cass_ram_16k_altera.v
+set_global_assignment -name VERILOG_FILE ../rtl/cass_ram_2k_altera.v
+set_global_assignment -name VERILOG_FILE ../rtl/dos_rom_altera.v
+set_global_assignment -name VERILOG_FILE ../rtl/EMU_CASS_KEY.v
+set_global_assignment -name VERILOG_FILE ../rtl/CLK10MHZ_PLL.v
+set_global_assignment -name VERILOG_FILE "../rtl/verilog-uart/uart_tx.v"
+set_global_assignment -name VERILOG_FILE "../rtl/verilog-uart/uart_rx.v"
+set_global_assignment -name VERILOG_FILE "../rtl/verilog-uart/uart.v"
+set_global_assignment -name VERILOG_FILE ../rtl/cass_ram_8k_altera.v
+set_global_assignment -name VERILOG_FILE ../rtl/AUDIO_IF.v
+set_global_assignment -name VERILOG_FILE ../rtl/AUDIO_CLK.v
 set_global_assignment -name VERILOG_FILE ../rtl/audio/wave_gen_string.v
 set_global_assignment -name VERILOG_FILE ../rtl/audio/wave_gen_square.v
 set_global_assignment -name VERILOG_FILE ../rtl/audio/wave_gen_sin.v

@@ -30,7 +30,8 @@ module SVGA_TIMING_GENERATION
 
 	// graph
 	graph_pixel,
-	graph_line
+	graph_line_2x,
+	graph_line_3x
 );
 
 input 				pixel_clock;		// pixel clock
@@ -51,7 +52,10 @@ output	reg	[9:0]	line_count;			// counts the display lines
 
 // 图形控制 128*64
 (*keep*)output	reg		[8:0]	graph_pixel;
-(*keep*)output	reg		[9:0]	graph_line;
+(*keep*)output	reg		[9:0]	graph_line_3x;
+
+// 图形控制 256*192
+(*keep*)output	reg		[9:0]	graph_line_2x;
 
 (*keep*)reg			h_blank;
 reg			v_blank;
@@ -275,8 +279,7 @@ always @ (posedge h_synch or posedge reset) begin
 end
 
 
-// 128x64 4色
-
+// 为所有图形模式提供水平计数
 always @ (posedge pixel_clock or posedge reset) begin
 	if (reset)
 	begin
@@ -294,25 +297,49 @@ always @ (posedge pixel_clock or posedge reset) begin
 	end
 end
 
-
+// 为图形模式提供垂直计数
+// 64x64  4色
+// 128x64  2色
+// 128x64  4色
 always @ (posedge h_synch or posedge reset) begin
 	if (reset)
 	begin
 		// on reset set line counter to 0
-		graph_line <= 10'd0;
+		graph_line_3x <= 10'd0;
 	end
 	else if(v_synch)
 	begin
 		// reset line counter
-		graph_line <= 10'd0;
+		graph_line_3x <= 10'd0;
 	end
 	else if(show_line)
-		if(graph_line[1:0] == 2'b10)		// 3行为单位计数
-			graph_line <= graph_line + 2;
+		if(graph_line_3x[1:0] == 2'b10)		// 3行为单位计数
+			graph_line_3x <= graph_line_3x + 2;
 		else
 			// increment line counter
-			graph_line <= graph_line + 1;
+			graph_line_3x <= graph_line_3x + 1;
 end
 
+// 为图形模式提供垂直计数
+// 128x96  2色
+// 128x96  4色
+// 128x192 2色
+// 128x192 4色
+// 256x192 2色
+always @ (posedge h_synch or posedge reset) begin
+	if (reset)
+	begin
+		// on reset set line counter to 0
+		graph_line_2x <= 10'd0;
+	end
+	else if(v_synch)
+	begin
+		// reset line counter
+		graph_line_2x <= 10'd0;
+	end
+	else if(show_line)
+		// increment line counter
+		graph_line_2x <= graph_line_2x + 1;
+end
 
 endmodule //SVGA_TIMING_GENERATION
