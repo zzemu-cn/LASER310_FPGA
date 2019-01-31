@@ -1,24 +1,26 @@
 # LASER310 FPGA
 
-Welcome to LASER310_FPGA project. This project is an attempt to recreate the once famous VZ300/Laser300 computer in 80's on Cyclone based FPGA boards.
+Welcome to LASER310_FPGA project. This project is an attempt to recreate the once famous VZ300/Laser310 computer in 80's on Altera Cyclone based FPGA boards.
 
 <img src="doc/images/Laser310onVGA.jpeg" alt="Laser310 on VGA" width="400"/>
 
 
 Features implemented:
 1. MC6847 /w VGA output
-2. Cassette input/output emu
-3. Laser310 internal RAM/ROM/DOS ROM on flash
-4. Buzzer output
-5. PS/2 keyboard support (Ctrl+F12 to reset).
-6. 20MHz overclock on SW1
+2. Super high resolution mode (256*192)
+3. Cassette input/output emu
+4. Laser310 internal ROM/DOS ROM on flash
+5. Enable external ROM with onboard switches at runtime.
+6. VZ200 support
+7. 256K RAM module
+8. Buzzer output
+9. PS/2 keyboard support (Ctrl+F12 to reset).
+10. 12.5MHz overclock on SW0
 
 ***Planned***
-1. Super high resolution mode (256*192)
-2. Z80 bus on GPIO mapping.
-3. VZ200 support
-4. 16K/64 RAM module
-5. Enable external ROM with onboard switches at runtime.
+
+1. Z80 bus on GPIO mapping.
+2. Floppy emu support
 
 ***Screenshots***  
 IORQ output n,5 captured on GPIO1  
