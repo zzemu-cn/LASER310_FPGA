@@ -21,8 +21,8 @@
 
 // 选择开发板
 //`define	DE0
-//`define	DE1
-`define	DE2
+`define	DE1
+//`define	DE2
 //`define	DE2_70
 //`define	DE2_115
 
@@ -101,7 +101,7 @@
 `define VGA_RESISTOR
 `define VGA_BIT12
 `define UART_CHIP
-`define CASS_EMU_16K
+`define CASS_EMU_8K
 
 // 用来从FLASH自动加载程序
 `define BOOT_ROM_6000
