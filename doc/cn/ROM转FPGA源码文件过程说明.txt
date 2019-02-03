@@ -28,12 +28,13 @@
 
     例如，在项目目录为D:\LASER310_FPGA时，命令如下：
     D:
-    cd D:\LASER310_FPGA\rtl
+    cd D:\LASER310_FPGA_prj\LASER310_FPGA\rtl
     php gen_mif.php ..\rom\VZ200_4K.FNT charrom_4k.mif
     php gen_mif.php ..\rom\vtechv20.u12 sysrom.mif
     php gen_mif.php ..\rom\vzdos.rom dosrom.mif
+    php gen_mif.php ..\rom\boot_rom.bin boot_rom_6000.mif
 
-    这三条命令分别把字库字模文件、系统rom文件、磁盘rom文件转换为FPGA的rtl源代码。
+    这四条命令分别把字库字模文件、系统rom文件、磁盘rom文件、自动化加载程序 转换为FPGA的rtl源代码。
 
 四、生成模拟磁带模块的预装载数据
     模拟磁带模块可以设置一个默认的装载磁带数据。可以通过命令把 vz 文件转换为FPGA的rtl源代码。

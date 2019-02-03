@@ -4,7 +4,7 @@ JedecChain;
 	DefaultMfr(6E);
 
 	P ActionCode(Cfg)
-		Device PartName(EP2C20F484) Path("D:/LASER310_FPGA/prj_de1/output_files/") File("de1.sof") MfrSpec(OpMask(1));
+		Device PartName(EP2C20F484) Path("D:/LASER310_FPGA_prj/LASER310_FPGA/prj_de1/output_files/") File("de1.sof") MfrSpec(OpMask(1));
 
 ChainEnd;
 

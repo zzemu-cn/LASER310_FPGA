@@ -95,7 +95,7 @@ module	EMU_CASS_KEY(
 input CASS_PLAY, CASS_STOP;
 
 //
-output	reg		[12:0]	CASS_BUF_A;
+output	reg		[15:0]	CASS_BUF_A;
 output	reg				CASS_BUF_WR;
 output	reg		[7:0]	CASS_BUF_DAT;
 input			[7:0]	CASS_BUF_Q;
@@ -105,7 +105,7 @@ output	reg				CASS_EN;
 output	reg		[1:0]	CASS_DAT;
 
 output	reg		[63:0]	KEY;
-output	reg		[7:0]	KEY_EX;
+output	reg		[9:0]	KEY_EX;
 output	reg				KEY_EN;
 
 input	wire	UART_RXD;
@@ -135,7 +135,7 @@ reg		[19:0]	KEY_DELAY;
 
 reg		[7:0]	DAT_CHK;
 reg		[7:0]	BUF_CNT;
-reg		[16:0]	BUF_WR_A;
+reg		[15:0]	BUF_WR_A;
 //reg		[7:0]	BUF_WR_DAT;
 
 reg		key_echo_en;
@@ -210,7 +210,7 @@ begin
 
 		KEY_EN			<=	1'b0;
 		KEY				<=	64'hFFFFFFFFFFFFFFFF;
-		KEY_EX			<=	8'hFF;
+		KEY_EX			<=	10'h3FF;
 	end
 	else
 	begin
@@ -225,7 +225,7 @@ begin
 
 				KEY_EN			<=	1'b0;
 				KEY				<=	64'hFFFFFFFFFFFFFFFF;
-				KEY_EX			<=	8'hFF;
+				KEY_EX			<=	10'h3FF;
 
 				uart_tx_tvalid	<=	1'b0;
 

@@ -72,15 +72,15 @@ GND                          : A1        : gnd    :                   :         
 VCCIO8                       : A2        : power  :                   : 2.5V    : 8         :                
 RESERVED_INPUT               : A3        :        :                   :         : 8         :                
 RESERVED_INPUT               : A4        :        :                   :         : 8         :                
-RESERVED_INPUT               : A5        :        :                   :         : 8         :                
+FL_ADDRESS[13]               : A5        : output : 2.5 V             :         : 8         : N              
 RESERVED_INPUT               : A6        :        :                   :         : 8         :                
 RESERVED_INPUT               : A7        :        :                   :         : 8         :                
 RESERVED_INPUT               : A8        :        :                   :         : 8         :                
-RESERVED_INPUT               : A9        :        :                   :         : 8         :                
-RESERVED_INPUT               : A10       :        :                   :         : 8         :                
+FL_DATA[4]                   : A9        : input  : 2.5 V             :         : 8         : N              
+FL_DATA[0]                   : A10       : input  : 2.5 V             :         : 8         : N              
 GND+                         : A11       :        :                   :         : 8         :                
 GND+                         : A12       :        :                   :         : 7         :                
-RESERVED_INPUT               : A13       :        :                   :         : 7         :                
+FL_DATA[2]                   : A13       : input  : 2.5 V             :         : 7         : N              
 RESERVED_INPUT               : A14       :        :                   :         : 7         :                
 RESERVED_INPUT               : A15       :        :                   :         : 7         :                
 RESERVED_INPUT               : A16       :        :                   :         : 7         :                
@@ -97,15 +97,15 @@ RESERVED_INPUT               : AA4       :        :                   :         
 RESERVED_INPUT               : AA5       :        :                   :         : 3         :                
 VCCIO3                       : AA6       : power  :                   : 2.5V    : 3         :                
 RESERVED_INPUT               : AA7       :        :                   :         : 3         :                
-RESERVED_INPUT               : AA8       :        :                   :         : 3         :                
+FL_ADDRESS[6]                : AA8       : output : 2.5 V             :         : 3         : N              
 RESERVED_INPUT               : AA9       :        :                   :         : 3         :                
 RESERVED_INPUT               : AA10      :        :                   :         : 3         :                
 GND+                         : AA11      :        :                   :         : 3         :                
 GND+                         : AA12      :        :                   :         : 4         :                
-RESERVED_INPUT               : AA13      :        :                   :         : 4         :                
-RESERVED_INPUT               : AA14      :        :                   :         : 4         :                
-RESERVED_INPUT               : AA15      :        :                   :         : 4         :                
-RESERVED_INPUT               : AA16      :        :                   :         : 4         :                
+FL_ADDRESS[9]                : AA13      : output : 2.5 V             :         : 4         : N              
+FL_ADDRESS[7]                : AA14      : output : 2.5 V             :         : 4         : N              
+FL_ADDRESS[3]                : AA15      : output : 2.5 V             :         : 4         : N              
+FL_WE_N                      : AA16      : output : 2.5 V             :         : 4         : N              
 RESERVED_INPUT               : AA17      :        :                   :         : 4         :                
 RESERVED_INPUT               : AA18      :        :                   :         : 4         :                
 RESERVED_INPUT               : AA19      :        :                   :         : 4         :                
@@ -119,13 +119,13 @@ RESERVED_INPUT               : AB4       :        :                   :         
 RESERVED_INPUT               : AB5       :        :                   :         : 3         :                
 GND                          : AB6       : gnd    :                   :         :           :                
 RESERVED_INPUT               : AB7       :        :                   :         : 3         :                
-RESERVED_INPUT               : AB8       :        :                   :         : 3         :                
-RESERVED_INPUT               : AB9       :        :                   :         : 3         :                
+FL_ADDRESS[8]                : AB8       : output : 2.5 V             :         : 3         : N              
+FL_ADDRESS[2]                : AB9       : output : 2.5 V             :         : 3         : N              
 RESERVED_INPUT               : AB10      :        :                   :         : 3         :                
 GND+                         : AB11      :        :                   :         : 3         :                
 GND+                         : AB12      :        :                   :         : 4         :                
 RESERVED_INPUT               : AB13      :        :                   :         : 4         :                
-RESERVED_INPUT               : AB14      :        :                   :         : 4         :                
+FL_ADDRESS[11]               : AB14      : output : 2.5 V             :         : 4         : N              
 RESERVED_INPUT               : AB15      :        :                   :         : 4         :                
 RESERVED_INPUT               : AB16      :        :                   :         : 4         :                
 RESERVED_INPUT               : AB17      :        :                   :         : 4         :                
@@ -143,7 +143,7 @@ RESERVED_INPUT               : B6        :        :                   :         
 RESERVED_INPUT               : B7        :        :                   :         : 8         :                
 RESERVED_INPUT               : B8        :        :                   :         : 8         :                
 RESERVED_INPUT               : B9        :        :                   :         : 8         :                
-RESERVED_INPUT               : B10       :        :                   :         : 8         :                
+FL_DATA[7]                   : B10       : input  : 2.5 V             :         : 8         : N              
 GND+                         : B11       :        :                   :         : 8         :                
 GND+                         : B12       :        :                   :         : 7         :                
 RESERVED_INPUT               : B13       :        :                   :         : 7         :                
@@ -163,7 +163,7 @@ RESERVED_INPUT               : C4        :        :                   :         
 GND                          : C5        : gnd    :                   :         :           :                
 RESERVED_INPUT               : C6        :        :                   :         : 8         :                
 RESERVED_INPUT               : C7        :        :                   :         : 8         :                
-RESERVED_INPUT               : C8        :        :                   :         : 8         :                
+FL_ADDRESS[17]               : C8        : output : 2.5 V             :         : 8         : N              
 GND                          : C9        : gnd    :                   :         :           :                
 RESERVED_INPUT               : C10       :        :                   :         : 8         :                
 GND                          : C11       : gnd    :                   :         :           :                
@@ -187,7 +187,7 @@ RESERVED_INPUT               : D6        :        :                   :         
 GND                          : D7        : gnd    :                   :         :           :                
 GND                          : D8        : gnd    :                   :         :           :                
 VCCIO8                       : D9        : power  :                   : 2.5V    : 8         :                
-RESERVED_INPUT               : D10       :        :                   :         : 8         :                
+FL_DATA[3]                   : D10       : input  : 2.5 V             :         : 8         : N              
 VCCIO8                       : D11       : power  :                   : 2.5V    : 8         :                
 VCCIO7                       : D12       : power  :                   : 2.5V    : 7         :                
 RESERVED_INPUT               : D13       :        :                   :         : 7         :                
@@ -209,9 +209,9 @@ RESERVED_INPUT               : E6        :        :                   :         
 RESERVED_INPUT               : E7        :        :                   :         : 8         :                
 VCCIO8                       : E8        : power  :                   : 2.5V    : 8         :                
 RESERVED_INPUT               : E9        :        :                   :         : 8         :                
-RESERVED_INPUT               : E10       :        :                   :         : 8         :                
+FL_DATA[6]                   : E10       : input  : 2.5 V             :         : 8         : N              
 RESERVED_INPUT               : E11       :        :                   :         : 7         :                
-RESERVED_INPUT               : E12       :        :                   :         : 7         :                
+FL_DATA[1]                   : E12       : input  : 2.5 V             :         : 7         : N              
 RESERVED_INPUT               : E13       :        :                   :         : 7         :                
 RESERVED_INPUT               : E14       :        :                   :         : 7         :                
 RESERVED_INPUT               : E15       :        :                   :         : 7         :                
@@ -251,7 +251,7 @@ SWITCH[3]                    : G4        : input  : 3.3-V LVTTL       :         
 RESERVED_INPUT               : G5        :        :                   :         : 1         :                
 VCCA3                        : G6        : power  :                   : 2.5V    :           :                
 RESERVED_INPUT               : G7        :        :                   :         : 8         :                
-RESERVED_INPUT               : G8        :        :                   :         : 8         :                
+FL_OE_N                      : G8        : output : 2.5 V             :         : 8         : N              
 RESERVED_INPUT               : G9        :        :                   :         : 8         :                
 RESERVED_INPUT               : G10       :        :                   :         : 8         :                
 RESERVED_INPUT               : G11       :        :                   :         : 8         :                
@@ -265,7 +265,7 @@ RESERVED_INPUT               : G18       :        :                   :         
 VCCIO6                       : G19       : power  :                   : 3.3V    : 6         :                
 GND                          : G20       : gnd    :                   :         :           :                
 CLK50MHZ                     : G21       : input  : 3.3-V LVTTL       :         : 6         : Y              
-GND+                         : G22       :        :                   :         : 6         :                
+FL_RY                        : G22       : input  : 2.5 V             :         : 6         : N              
 LED[3]                       : H1        : output : 3.3-V LVTTL       :         : 1         : Y              
 BUTTON_N[0]                  : H2        : input  : 3.3-V LVTTL       :         : 1         : Y              
 GND                          : H3        : gnd    :                   :         :           :                
@@ -276,7 +276,7 @@ RESERVED_INPUT               : H7        :        :                   :         
 GND                          : H8        : gnd    :                   :         :           :                
 RESERVED_INPUT               : H9        :        :                   :         : 8         :                
 RESERVED_INPUT               : H10       :        :                   :         : 8         :                
-RESERVED_INPUT               : H11       :        :                   :         : 8         :                
+FL_DATA[5]                   : H11       : input  : 2.5 V             :         : 8         : N              
 RESERVED_INPUT               : H12       :        :                   :         : 7         :                
 RESERVED_INPUT               : H13       :        :                   :         : 7         :                
 RESERVED_INPUT               : H14       :        :                   :         : 7         :                
@@ -337,8 +337,8 @@ TCK                          : L2        : input  :                   :         
 nCE                          : L3        :        :                   :         : 1         :                
 TDO                          : L4        : output :                   :         : 1         :                
 TDI                          : L5        : input  :                   :         : 1         :                
-RESERVED_INPUT               : L6        :        :                   :         : 2         :                
-RESERVED_INPUT               : L7        :        :                   :         : 2         :                
+FL_ADDRESS[21]               : L6        : output : 2.5 V             :         : 2         : N              
+SWITCH[9]                    : L7        : input  : 2.5 V             :         : 2         : N              
 RESERVED_INPUT               : L8        :        :                   :         : 1         :                
 VCCINT                       : L9        : power  :                   : 1.2V    :           :                
 GND                          : L10       : gnd    :                   :         :           :                
@@ -354,12 +354,12 @@ VCCIO6                       : L19       : power  :                   : 3.3V    
 GND                          : L20       : gnd    :                   :         :           :                
 VGA_HS                       : L21       : output : 3.3-V LVTTL       :         : 6         : Y              
 VGA_VS                       : L22       : output : 3.3-V LVTTL       :         : 6         : Y              
-RESERVED_INPUT               : M1        :        :                   :         : 2         :                
-RESERVED_INPUT               : M2        :        :                   :         : 2         :                
-RESERVED_INPUT               : M3        :        :                   :         : 2         :                
-RESERVED_INPUT               : M4        :        :                   :         : 2         :                
-RESERVED_INPUT               : M5        :        :                   :         : 2         :                
-RESERVED_INPUT               : M6        :        :                   :         : 2         :                
+FL_ADDRESS[18]               : M1        : output : 2.5 V             :         : 2         : N              
+FL_ADDRESS[19]               : M2        : output : 2.5 V             :         : 2         : N              
+FL_ADDRESS[20]               : M3        : output : 2.5 V             :         : 2         : N              
+SWITCH[5]                    : M4        : input  : 2.5 V             :         : 2         : N              
+SWITCH[4]                    : M5        : input  : 2.5 V             :         : 2         : N              
+SWITCH[6]                    : M6        : input  : 2.5 V             :         : 2         : N              
 RESERVED_INPUT               : M7        :        :                   :         : 2         :                
 RESERVED_INPUT               : M8        :        :                   :         : 2         :                
 VCCINT                       : M9        : power  :                   : 1.2V    :           :                
@@ -376,8 +376,8 @@ RESERVED_INPUT               : M19       :        :                   :         
 RESERVED_INPUT               : M20       :        :                   :         : 5         :                
 RESERVED_INPUT               : M21       :        :                   :         : 5         :                
 RESERVED_INPUT               : M22       :        :                   :         : 5         :                
-RESERVED_INPUT               : N1        :        :                   :         : 2         :                
-RESERVED_INPUT               : N2        :        :                   :         : 2         :                
+FL_ADDRESS[14]               : N1        : output : 2.5 V             :         : 2         : N              
+FL_ADDRESS[15]               : N2        : output : 2.5 V             :         : 2         : N              
 GND                          : N3        : gnd    :                   :         :           :                
 VCCIO2                       : N4        : power  :                   : 2.5V    : 2         :                
 RESERVED_INPUT               : N5        :        :                   :         : 2         :                
@@ -398,8 +398,8 @@ RESERVED_INPUT               : N19       :        :                   :         
 RESERVED_INPUT               : N20       :        :                   :         : 5         :                
 RESERVED_INPUT               : N21       :        :                   :         : 5         :                
 RESERVED_INPUT               : N22       :        :                   :         : 5         :                
-RESERVED_INPUT               : P1        :        :                   :         : 2         :                
-RESERVED_INPUT               : P2        :        :                   :         : 2         :                
+SWITCH[8]                    : P1        : input  : 2.5 V             :         : 2         : N              
+SWITCH[7]                    : P2        : input  : 2.5 V             :         : 2         : N              
 RESERVED_INPUT               : P3        :        :                   :         : 2         :                
 RESERVED_INPUT               : P4        :        :                   :         : 2         :                
 RESERVED_INPUT               : P5        :        :                   :         : 2         :                
@@ -448,12 +448,12 @@ RESERVED_INPUT               : T3        :        :                   :         
 RESERVED_INPUT               : T4        :        :                   :         : 2         :                
 RESERVED_INPUT               : T5        :        :                   :         : 2         :                
 VCCA1                        : T6        : power  :                   : 2.5V    :           :                
-RESERVED_INPUT               : T7        :        :                   :         : 2         :                
+FL_WP_N                      : T7        : output : 2.5 V             :         : 2         : N              
 RESERVED_INPUT               : T8        :        :                   :         : 3         :                
 RESERVED_INPUT               : T9        :        :                   :         : 3         :                
 RESERVED_INPUT               : T10       :        :                   :         : 3         :                
-RESERVED_INPUT               : T11       :        :                   :         : 3         :                
-RESERVED_INPUT               : T12       :        :                   :         : 4         :                
+FL_ADDRESS[5]                : T11       : output : 2.5 V             :         : 3         : N              
+FL_ADDRESS[1]                : T12       : output : 2.5 V             :         : 4         : N              
 VCCINT                       : T13       : power  :                   : 1.2V    :           :                
 RESERVED_INPUT               : T14       :        :                   :         : 4         :                
 RESERVED_INPUT               : T15       :        :                   :         : 4         :                
@@ -465,7 +465,7 @@ GND                          : T20       : gnd    :                   :         
 GND+                         : T21       :        :                   :         : 5         :                
 GND+                         : T22       :        :                   :         : 5         :                
 RESERVED_INPUT               : U1        :        :                   :         : 2         :                
-RESERVED_INPUT               : U2        :        :                   :         : 2         :                
+FL_ADDRESS[16]               : U2        : output : 2.5 V             :         : 2         : N              
 GND                          : U3        : gnd    :                   :         :           :                
 VCCIO2                       : U4        : power  :                   : 2.5V    : 2         :                
 GNDA1                        : U5        : gnd    :                   :         :           :                
@@ -474,7 +474,7 @@ RESERVED_INPUT               : U7        :        :                   :         
 RESERVED_INPUT               : U8        :        :                   :         : 3         :                
 RESERVED_INPUT               : U9        :        :                   :         : 3         :                
 RESERVED_INPUT               : U10       :        :                   :         : 3         :                
-RESERVED_INPUT               : U11       :        :                   :         : 3         :                
+FL_ADDRESS[12]               : U11       : output : 2.5 V             :         : 3         : N              
 RESERVED_INPUT               : U12       :        :                   :         : 4         :                
 RESERVED_INPUT               : U13       :        :                   :         : 4         :                
 RESERVED_INPUT               : U14       :        :                   :         : 4         :                
@@ -494,9 +494,9 @@ RESERVED_INPUT               : V5        :        :                   :         
 RESERVED_INPUT               : V6        :        :                   :         : 3         :                
 RESERVED_INPUT               : V7        :        :                   :         : 3         :                
 RESERVED_INPUT               : V8        :        :                   :         : 3         :                
-RESERVED_INPUT               : V9        :        :                   :         : 3         :                
+FL_ADDRESS[0]                : V9        : output : 2.5 V             :         : 3         : N              
 RESERVED_INPUT               : V10       :        :                   :         : 3         :                
-RESERVED_INPUT               : V11       :        :                   :         : 3         :                
+FL_ADDRESS[10]               : V11       : output : 2.5 V             :         : 3         : N              
 RESERVED_INPUT               : V12       :        :                   :         : 4         :                
 RESERVED_INPUT               : V13       :        :                   :         : 4         :                
 RESERVED_INPUT               : V14       :        :                   :         : 4         :                
@@ -517,12 +517,12 @@ RESERVED_INPUT               : W6        :        :                   :         
 RESERVED_INPUT               : W7        :        :                   :         : 3         :                
 RESERVED_INPUT               : W8        :        :                   :         : 3         :                
 VCCIO3                       : W9        : power  :                   : 2.5V    : 3         :                
-RESERVED_INPUT               : W10       :        :                   :         : 3         :                
+FL_ADDRESS[4]                : W10       : output : 2.5 V             :         : 3         : N              
 VCCIO3                       : W11       : power  :                   : 2.5V    : 3         :                
 VCCIO4                       : W12       : power  :                   : 2.5V    : 4         :                
 RESERVED_INPUT               : W13       :        :                   :         : 4         :                
-RESERVED_INPUT               : W14       :        :                   :         : 4         :                
-RESERVED_INPUT               : W15       :        :                   :         : 4         :                
+FL_CE_N                      : W14       : output : 2.5 V             :         : 4         : N              
+FL_ADDRESS[22]               : W15       : output : 2.5 V             :         : 4         : N              
 VCCIO4                       : W16       : power  :                   : 2.5V    : 4         :                
 RESERVED_INPUT               : W17       :        :                   :         : 4         :                
 VCCIO4                       : W18       : power  :                   : 2.5V    : 4         :                
@@ -535,11 +535,11 @@ RESERVED_INPUT               : Y2        :        :                   :         
 RESERVED_INPUT               : Y3        :        :                   :         : 3         :                
 RESERVED_INPUT               : Y4        :        :                   :         : 3         :                
 GND                          : Y5        : gnd    :                   :         :           :                
-RESERVED_INPUT               : Y6        :        :                   :         : 3         :                
+FL_BYTE_N                    : Y6        : output : 2.5 V             :         : 3         : N              
 RESERVED_INPUT               : Y7        :        :                   :         : 3         :                
 RESERVED_INPUT               : Y8        :        :                   :         : 3         :                
 GND                          : Y9        : gnd    :                   :         :           :                
-RESERVED_INPUT               : Y10       :        :                   :         : 3         :                
+FL_RESET_N                   : Y10       : output : 2.5 V             :         : 3         : N              
 GND                          : Y11       : gnd    :                   :         :           :                
 GND                          : Y12       : gnd    :                   :         :           :                
 RESERVED_INPUT               : Y13       :        :                   :         : 4         :                

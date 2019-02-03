@@ -363,3 +363,23 @@ A_PATH_CTRL	:	LUT_DATA	<=	16'h0812;
 
 对数据上传的协议改进，速度已经可以一接受。
 
+
+2018-1-22
+
+设计中，sys_rom 和 2K RAM 作为基础系统，保证系统最低需求。
+即使 flash 不能成功写入，也不影响系统运行。
+sys_rom_altera sys_rom(); ram_2k_altera sys_ram_2k();
+
+开始增加 SHRG 扩展绘图模式支持
+
+2018-1-23
+
+内存有三种配置方案：1、通过 FPGA 片上内存支持 16K  2、通过 FPGA 片上内存支持 16K 和 16K 扩展内存  3、通过 SRAM 或 SSRAM 支持 256K 扩展内存
+
+不同的 RAM 扩充卡BANK选择IO地址不同
+
+64K RAM expansion cartridge
+vz300_review.pdf 中的端口号是 IO 7FH 127
+
+128K SIDEWAYS RAM
+SHRG2 HVVZUG23 (Mar-Apr 1989).PDF 中的端口号是 IO 112
