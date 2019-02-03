@@ -17,12 +17,12 @@
 
 
 // 如果烧写 FLASH 成功，可以打开 ROM_ON_FLASH 选项。这样能提供更强的功能。
-`define ROM_ON_FLASH
+//`define ROM_ON_FLASH
 
 // 选择开发板
 //`define	DE0
-//`define	DE1
-`define	DE2
+`define	DE1
+//`define	DE2
 //`define	DE2_70
 //`define	DE2_115
 
@@ -101,7 +101,8 @@
 `define VGA_RESISTOR
 `define VGA_BIT12
 `define UART_CHIP
-`define CASS_EMU_16K
+//`define CASS_EMU_16K
+`define CASS_EMU_8K
 
 // 用来从FLASH自动加载程序
 `define BOOT_ROM_6000
@@ -162,7 +163,8 @@
 `define RAM_ON_SRAM_CHIP
 `define SRAM_CHIP_256x16
 `define	RAM_256K_EXPANSION
-`define CASS_EMU_16K
+//`define CASS_EMU_16K
+`define CASS_EMU_8K
 `define VRAM_8K
 
 `else
