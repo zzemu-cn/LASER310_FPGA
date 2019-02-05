@@ -17,7 +17,7 @@
 
 
 // 如果烧写 FLASH 成功，可以打开 ROM_ON_FLASH 选项。这样能提供更强的功能。
-//`define ROM_ON_FLASH
+`define ROM_ON_FLASH
 
 // 选择开发板
 //`define	DE0
@@ -59,6 +59,7 @@
 `define BOOT_ROM_6000
 
 `define RAM_ON_FPGA
+`define	BASE_RAM_16K
 `define	RAM_16K_EXPANSION
 `define CASS_EMU_8K
 `define VRAM_8K
@@ -78,6 +79,7 @@
 //`define	BASE_RAM_78
 
 `define RAM_ON_FPGA
+`define	BASE_RAM_16K
 //`define	RAM_16K_EXPANSION
 `define CASS_EMU_4K
 `define VRAM_8K
@@ -207,6 +209,7 @@
 `define UART_CHIP
 `define UART_CHIP_EXT
 //`define	RAM_ON_FPGA
+//`define	BASE_RAM_16K
 //`define	RAM_16K_EXPANSION
 
 // 用来从FLASH自动加载程序
@@ -232,6 +235,7 @@
 `define	BASE_SYS_ROM
 `define	BASE_DOS_ROM
 //`define	RAM_ON_FPGA
+//`define	BASE_RAM_16K
 //`define	RAM_16K_EXPANSION
 
 `define	BASE_RAM_78
@@ -262,6 +266,7 @@
 `define UART_CHIP
 `define UART_CHIP_EXT
 //`define	RAM_ON_FPGA
+//`define	BASE_RAM_16K
 //`define	RAM_16K_EXPANSION
 
 // 用来从FLASH自动加载程序
@@ -287,6 +292,7 @@
 `define	BASE_SYS_ROM
 `define	BASE_DOS_ROM
 //`define	RAM_ON_FPGA
+//`define	BASE_RAM_16K
 //`define	RAM_16K_EXPANSION
 
 `define	BASE_RAM_78
@@ -841,14 +847,19 @@ wire				CPU_RFSH_N;
 // ROM IO RAM
 reg					LATCHED_DOSROM_EN;
 reg					LATCHED_BOOTROM_EN;
+reg					LATCHED_AUTOSTARTROM_EN;
 
 wire	[7:0]		SYS_ROM_DATA;
 wire	[7:0]		DOS_ROM_DATA;
+wire	[7:0]		AUTOSTART_ROM_DATA;
 
-wire	[7:0]		BOOT_ROM_DATA;
+wire	[7:0]		BOOT_ROM_6000_DATA;
 
 reg					BOOTROM_EN;
 reg		[7:0]		BOOTROM_BANK;
+
+reg					AUTOSTARTROM_EN;
+reg		[7:0]		AUTOSTARTROM_BANK;
 
 //wire	[7:0]		IO_DATA;
 //wire	[7:0]		IO_WR;
@@ -881,7 +892,8 @@ wire				ADDRESS_DOSROM;
 wire				ADDRESS_IO;
 wire				ADDRESS_VRAM;
 
-wire				ADDRESS_BOOTROM;
+wire				ADDRESS_BOOTROM_6000;
+wire				ADDRESS_AUTOSTARTROM;
 
 wire				ADDRESS_89AB;
 wire				ADDRESS_CDEF;
@@ -913,6 +925,7 @@ reg		[7:0]		LATCHED_IO_DATA_WR;
 reg		[7:0]		LATCHED_BANK_0000;
 reg		[7:0]		LATCHED_BANK_4000;
 reg		[7:0]		LATCHED_BANK_C000;
+reg		[7:0]		LATCHED_BANK_4DEF;
 
 // 用于大于 4M 的 FLASH 区间切换
 reg					LATCHED_FLASH_BANK_SW;
@@ -1119,10 +1132,12 @@ always @(posedge BASE_CLK or negedge RESET_N)
 		// 复位期间设置，避免拨动开关引起错误
 		LATCHED_DOSROM_EN		<=	SWITCH[1];
 
-		LATCHED_BANK_0000		<=	{5'b0,SWITCH[5:3]};
-		LATCHED_BANK_4000		<=	{4'b0,SWITCH[9:6]};
+		LATCHED_BANK_0000		<=	{5'b0,SWITCH[6:4]};
+		LATCHED_BANK_4000		<=	{5'b0,SWITCH[9:7]};
 
 		LATCHED_BOOTROM_EN		<=	BOOTROM_EN;
+		LATCHED_AUTOSTARTROM_EN	<=	AUTOSTARTROM_EN;
+
 		//LATCHED_BOOTROM_EN		<=	1'b0;
 
 		//LATCHED_FLASH_BANK_SW		<=	SWITCH[10];
@@ -1139,6 +1154,11 @@ always @(posedge BASE_CLK or negedge RESET_N)
 			LATCHED_BANK_C000		<=	BOOTROM_BANK;
 		else
 			LATCHED_BANK_C000		<=	8'b0;
+
+		if(AUTOSTARTROM_EN)
+			LATCHED_BANK_4DEF		<=	AUTOSTARTROM_BANK;
+		else
+			LATCHED_BANK_4DEF		<=	8'b0;
 `endif
 
 `ifdef RAM_256K_EXPANSION
@@ -1552,17 +1572,18 @@ assign CPU_WAIT = 1'b0;
 // B800 -- BFFF RAM ext 2KB
 // C000 -- F7FF RAM ext 14KB
 
-assign ADDRESS_ROM			=	(CPU_A[15:14] == 2'b00)?1'b1:1'b0;
-assign ADDRESS_DOSROM		=	(CPU_A[15:13] == 3'b010)?LATCHED_DOSROM_EN:1'b0;
-assign ADDRESS_BOOTROM		=	(CPU_A[15:11] == 5'b01100)?LATCHED_BOOTROM_EN:1'b0;
-assign ADDRESS_IO			=	(CPU_A[15:11] == 5'b01101)?1'b1:1'b0;
-assign ADDRESS_VRAM			=	(CPU_A[15:11] == 5'b01110)?1'b1:1'b0;
+assign ADDRESS_ROM				=	(CPU_A[15:14] == 2'b00)?1'b1:1'b0;
+assign ADDRESS_DOSROM			=	(CPU_A[15:13] == 3'b010)?LATCHED_DOSROM_EN:1'b0;
+assign ADDRESS_BOOTROM_6000		=	(CPU_A[15:11] == 5'b01100)?LATCHED_BOOTROM_EN:1'b0;
+assign ADDRESS_AUTOSTARTROM		=	(CPU_A[15:12] == 4'h4||CPU_A[15:12] == 4'hD||CPU_A[15:12] == 4'hE||CPU_A[15:12] == 4'hF)?LATCHED_AUTOSTARTROM_EN:1'b0;
+assign ADDRESS_IO				=	(CPU_A[15:11] == 5'b01101)?1'b1:1'b0;
+assign ADDRESS_VRAM				=	(CPU_A[15:11] == 5'b01110)?1'b1:1'b0;
 
-assign ADDRESS_89AB			=	(CPU_A[15:14] == 2'b10)?1'b1:1'b0;
-assign ADDRESS_CDEF			=	(CPU_A[15:14] == 2'b11)?1'b1:1'b0;
+assign ADDRESS_89AB				=	(CPU_A[15:14] == 2'b10)?1'b1:1'b0;
+assign ADDRESS_CDEF				=	(CPU_A[15:14] == 2'b11)?1'b1:1'b0;
 
 // 7800 -- 7FFF RAM 2KB
-assign ADDRESS_RAM_78		=	(CPU_A[15:11] == 5'b01111)?1'b1:1'b0;
+assign ADDRESS_RAM_78			=	(CPU_A[15:11] == 5'b01111)?1'b1:1'b0;
 
 
 // 7800 -- 7FFF RAM 2KB
@@ -1628,45 +1649,54 @@ assign RAM_CDEF_WR		= ({ADDRESS_CDEF,MEM_OP_WR,CPU_WR,CPU_IORQ} == 4'b1110)?1'b1
 
 
 `ifdef	RAM_ON_SRAM_CHIP
-assign CPU_DI = 	ADDRESS_ROM			? SYS_ROM_DATA		:
-					ADDRESS_DOSROM		? DOS_ROM_DATA		:
-					ADDRESS_BOOTROM		? BOOT_ROM_DATA		:
-					ADDRESS_IO			? LATCHED_KEY_DATA	:
-					ADDRESS_VRAM		? VRAM_DATA_OUT		:
-					ADDRESS_RAM_78		? RAM_78_DATA		:
-					ADDRESS_89AB		? RAM_89AB_DATA_OUT	:
-					ADDRESS_CDEF		? MEM_CDEF_DATA_OUT	:
+assign CPU_DI = 	ADDRESS_ROM				? SYS_ROM_DATA			:
+					ADDRESS_AUTOSTARTROM	? AUTOSTART_ROM_DATA	:
+					ADDRESS_DOSROM			? DOS_ROM_DATA			:
+`ifdef BOOT_ROM_6000
+					ADDRESS_BOOTROM_6000	? BOOT_ROM_6000_DATA	:
+`endif
+					ADDRESS_IO				? LATCHED_KEY_DATA		:
+					ADDRESS_VRAM			? VRAM_DATA_OUT			:
+					ADDRESS_RAM_78			? RAM_78_DATA			:
+					ADDRESS_89AB			? RAM_89AB_DATA_OUT		:
+					ADDRESS_CDEF			? MEM_CDEF_DATA_OUT		:
 					8'hzz;
 `endif
 
 
 `ifdef	RAM_ON_SSRAM_CHIP
-assign CPU_DI = 	ADDRESS_ROM			? SYS_ROM_DATA		:
-					ADDRESS_DOSROM		? DOS_ROM_DATA		:
-					ADDRESS_BOOTROM		? BOOT_ROM_DATA		:
-					ADDRESS_IO			? LATCHED_KEY_DATA	:
-					ADDRESS_VRAM		? VRAM_DATA_OUT		:
-					ADDRESS_RAM_78		? RAM_78_DATA		:
-					ADDRESS_89AB		? RAM_89AB_DATA_OUT	:
-					ADDRESS_CDEF		? MEM_CDEF_DATA_OUT	:
+assign CPU_DI = 	ADDRESS_ROM				? SYS_ROM_DATA			:
+					ADDRESS_AUTOSTARTROM	? AUTOSTART_ROM_DATA	:
+					ADDRESS_DOSROM			? DOS_ROM_DATA			:
+`ifdef BOOT_ROM_6000
+					ADDRESS_BOOTROM_6000	? BOOT_ROM_6000_DATA	:
+`endif
+					ADDRESS_IO				? LATCHED_KEY_DATA		:
+					ADDRESS_VRAM			? VRAM_DATA_OUT			:
+					ADDRESS_RAM_78			? RAM_78_DATA			:
+					ADDRESS_89AB			? RAM_89AB_DATA_OUT		:
+					ADDRESS_CDEF			? MEM_CDEF_DATA_OUT		:
 					8'hzz;
 `endif
 
 
 `ifdef	RAM_ON_FPGA
-assign CPU_DI = 	ADDRESS_ROM			? SYS_ROM_DATA		:
-					ADDRESS_DOSROM		? DOS_ROM_DATA		:
-					ADDRESS_BOOTROM		? BOOT_ROM_DATA		:
-					ADDRESS_IO			? LATCHED_KEY_DATA	:
-					ADDRESS_VRAM		? VRAM_DATA_OUT		:
+assign CPU_DI = 	ADDRESS_ROM				? SYS_ROM_DATA			:
+					ADDRESS_AUTOSTARTROM	? AUTOSTART_ROM_DATA	:
+					ADDRESS_DOSROM			? DOS_ROM_DATA			:
+`ifdef BOOT_ROM_6000
+					ADDRESS_BOOTROM_6000	? BOOT_ROM_6000_DATA	:
+`endif
+					ADDRESS_IO				? LATCHED_KEY_DATA		:
+					ADDRESS_VRAM			? VRAM_DATA_OUT			:
 `ifdef BASE_RAM_16K
-					ADDRESS_RAM_16K		? RAM_16K_DATA_OUT	:
+					ADDRESS_RAM_16K			? RAM_16K_DATA_OUT		:
 `endif
 `ifdef RAM_16K_EXPANSION
-					ADDRESS_RAM_16K_EXP	? RAM_16K_EXP_DATA_OUT	:
+					ADDRESS_RAM_16K_EXP		? RAM_16K_EXP_DATA_OUT	:
 `else
 `ifdef FLASH_CHIP
-					ADDRESS_CDEF		? MEM_CDEF_DATA_OUT	:
+					ADDRESS_CDEF			? MEM_CDEF_DATA_OUT		:
 `endif
 `endif
 					8'hzz;
@@ -1725,15 +1755,16 @@ ram_2k_altera sys_ram_2k(
 
 `ifdef FPGA_ALTERA
 
-boot_rom_6000_altera boot_rom(
+boot_rom_6000_altera boot_rom_6000(
 	.address(CPU_A[8:0]),
 	.clock(BASE_CLK),
-	.q(BOOT_ROM_DATA)
+	.q(BOOT_ROM_6000_DATA)
 );
 
 `endif
 
 `endif
+
 
 
 `ifdef FLASH_CHIP
@@ -1743,17 +1774,19 @@ boot_rom_6000_altera boot_rom(
 // Altera DE1 4MB FLASH
 `ifdef FLASH_CHIP_4M
 //output	[21:0]	FL_ADDRESS;
-assign	FL_ADDRESS[21:0]	=	(ADDRESS_CDEF)		?	{LATCHED_BANK_C000, CPU_A[13:0]}				:
-								(ADDRESS_DOSROM)	?	{5'b00001, LATCHED_BANK_4000[3:0], CPU_A[12:0]}	:
-														{5'b00000, LATCHED_BANK_0000[2:0], CPU_A[13:0]}	;
+assign	FL_ADDRESS[21:0]	=	(ADDRESS_AUTOSTARTROM)		?	{LATCHED_BANK_4DEF, CPU_A[13:0]}				:
+								(ADDRESS_CDEF)				?	{LATCHED_BANK_C000, CPU_A[13:0]}				:
+								(ADDRESS_DOSROM)			?	{5'b00001, LATCHED_BANK_4000[2:0], CPU_A[13:0]}	:
+																{5'b00000, LATCHED_BANK_0000[2:0], CPU_A[13:0]}	;
 `endif
 
 // Altera DE2-70 8MB FLASH
 `ifdef FLASH_CHIP_8M
 //output	[22:0]	FL_ADDRESS;
-assign	FL_ADDRESS[21:0]	=	(ADDRESS_CDEF)		?	{LATCHED_BANK_C000, CPU_A[13:0]}				:
-								(ADDRESS_DOSROM)	?	{5'b00001, LATCHED_BANK_4000[3:0], CPU_A[12:0]}	:
-														{5'b00000, LATCHED_BANK_0000[2:0], CPU_A[13:0]}	;
+assign	FL_ADDRESS[21:0]	=	(ADDRESS_AUTOSTARTROM)		?	{LATCHED_BANK_4DEF, CPU_A[13:0]}				:
+								(ADDRESS_CDEF)				?	{LATCHED_BANK_C000, CPU_A[13:0]}				:
+								(ADDRESS_DOSROM)			?	{5'b00001, LATCHED_BANK_4000[2:0], CPU_A[13:0]}	:
+																{5'b00000, LATCHED_BANK_0000[2:0], CPU_A[13:0]}	;
 assign	FL_ADDRESS[22]		=	LATCHED_FLASH_BANK_SW;
 `endif
 
@@ -1770,6 +1803,8 @@ assign	SYS_ROM_DATA	=	FL_DATA;
 `ifndef BASE_DOS_ROM
 assign	DOS_ROM_DATA	=	FL_DATA;
 `endif
+
+assign	AUTOSTART_ROM_DATA	=	FL_DATA;
 
 `ifdef DE1
 assign	FL_BYTE_N	=	1'b0;
@@ -1798,6 +1833,11 @@ assign	FL_WP_N		=	1'bz;
 //input		FL_RY;
 assign	FL_WP_N		=	1'bz;
 `endif
+
+
+`else
+
+assign	AUTOSTART_ROM_DATA	=	8'bz;
 
 `endif
 
@@ -2185,6 +2225,9 @@ begin
 
 		BOOTROM_BANK		<=	0;
 		BOOTROM_EN			<=	1'b0;
+
+		AUTOSTARTROM_BANK	<=	0;
+		AUTOSTARTROM_EN		<=	1'b0;
 	end
 	else
 	begin
@@ -2200,6 +2243,8 @@ begin
 				begin
 					BOOTROM_EN			<=	1'b0;
 					BOOTROM_BANK		<=	0;
+					AUTOSTARTROM_EN		<=	1'b0;
+					AUTOSTARTROM_BANK	<=	0;
 					RESET_KEY_COUNT		<=	17'h0;
 				end
 		end
@@ -2208,81 +2253,137 @@ begin
 		8'h01:	KEY_Fxx[ 8] <= PRESS;	// F9  CASS PLAY
 		8'h0A:
 		begin
-				KEY_Fxx[ 7] <= PRESS;	// F8  Ctrl  BOOT 8
-				if(PRESS && (KEY[10]==PRESS_N))
+				KEY_Fxx[ 7] <= PRESS;	// F8  Ctrl or L-Shift BOOT 8
+				if(PRESS && (KEY[18]==PRESS_N))
 				begin
 					BOOTROM_EN			<=	1'b1;
-					BOOTROM_BANK		<=	23;
+					BOOTROM_BANK		<=	39;
+					RESET_KEY_COUNT		<=	17'h0;
+				end
+				else
+				if(PRESS && (KEY[10]==PRESS_N))
+				begin
+					AUTOSTARTROM_EN		<=	1'b1;
+					AUTOSTARTROM_BANK	<=	23;
 					RESET_KEY_COUNT		<=	17'h0;
 				end
 		end
 		8'h83:
 		begin
-				KEY_Fxx[ 6] <= PRESS;	// F7  Ctrl  BOOT 7
-				if(PRESS && (KEY[10]==PRESS_N))
+				KEY_Fxx[ 6] <= PRESS;	// F7  Ctrl or L-Shift BOOT 7
+				if(PRESS && (KEY[18]==PRESS_N))
 				begin
 					BOOTROM_EN			<=	1'b1;
-					BOOTROM_BANK		<=	22;
+					BOOTROM_BANK		<=	38;
+					RESET_KEY_COUNT		<=	17'h0;
+				end
+				else
+				if(PRESS && (KEY[10]==PRESS_N))
+				begin
+					AUTOSTARTROM_EN		<=	1'b1;
+					AUTOSTARTROM_BANK	<=	22;
 					RESET_KEY_COUNT		<=	17'h0;
 				end
 		end
 		8'h0B:
 		begin
-				KEY_Fxx[ 5] <= PRESS;	// F6  Ctrl  BOOT 6
-				if(PRESS && (KEY[10]==PRESS_N))
+				KEY_Fxx[ 5] <= PRESS;	// F6  Ctrl or L-Shift BOOT 6
+				if(PRESS && (KEY[18]==PRESS_N))
 				begin
 					BOOTROM_EN			<=	1'b1;
-					BOOTROM_BANK		<=	21;
+					BOOTROM_BANK		<=	37;
+					RESET_KEY_COUNT		<=	17'h0;
+				end
+				else
+				if(PRESS && (KEY[10]==PRESS_N))
+				begin
+					AUTOSTARTROM_EN		<=	1'b1;
+					AUTOSTARTROM_BANK	<=	21;
 					RESET_KEY_COUNT		<=	17'h0;
 				end
 		end
 		8'h03:
 		begin
-				KEY_Fxx[ 4] <= PRESS;	// F5  Ctrl  BOOT 5
-				if(PRESS && (KEY[10]==PRESS_N))
+				KEY_Fxx[ 4] <= PRESS;	// F5  Ctrl or L-Shift BOOT 5
+				if(PRESS && (KEY[18]==PRESS_N))
 				begin
 					BOOTROM_EN			<=	1'b1;
-					BOOTROM_BANK		<=	20;
+					BOOTROM_BANK		<=	36;
+					RESET_KEY_COUNT		<=	17'h0;
+				end
+				else
+				if(PRESS && (KEY[10]==PRESS_N))
+				begin
+					AUTOSTARTROM_EN		<=	1'b1;
+					AUTOSTARTROM_BANK	<=	20;
 					RESET_KEY_COUNT		<=	17'h0;
 				end
 		end
 		8'h0C:
 		begin
-				KEY_Fxx[ 3] <= PRESS;	// F4  Ctrl  BOOT 4
-				if(PRESS && (KEY[10]==PRESS_N))
+				KEY_Fxx[ 3] <= PRESS;	// F4  Ctrl or L-Shift BOOT 4
+				if(PRESS && (KEY[18]==PRESS_N))
 				begin
 					BOOTROM_EN			<=	1'b1;
-					BOOTROM_BANK		<=	19;
+					BOOTROM_BANK		<=	35;
+					RESET_KEY_COUNT		<=	17'h0;
+				end
+				else
+				if(PRESS && (KEY[10]==PRESS_N))
+				begin
+					AUTOSTARTROM_EN		<=	1'b1;
+					AUTOSTARTROM_BANK	<=	19;
 					RESET_KEY_COUNT		<=	17'h0;
 				end
 		end
 		8'h04:
 		begin
-				KEY_Fxx[ 2] <= PRESS;	// F3  Ctrl  BOOT 3
-				if(PRESS && (KEY[10]==PRESS_N))
+				KEY_Fxx[ 2] <= PRESS;	// F3  Ctrl or L-Shift BOOT 3
+				if(PRESS && (KEY[18]==PRESS_N))
 				begin
 					BOOTROM_EN			<=	1'b1;
-					BOOTROM_BANK		<=	18;
+					BOOTROM_BANK		<=	34;
+					RESET_KEY_COUNT		<=	17'h0;
+				end
+				else
+				if(PRESS && (KEY[10]==PRESS_N))
+				begin
+					AUTOSTARTROM_EN		<=	1'b1;
+					AUTOSTARTROM_BANK	<=	18;
 					RESET_KEY_COUNT		<=	17'h0;
 				end
 		end
 		8'h06:
 		begin
-				KEY_Fxx[ 1] <= PRESS;	// F2  Ctrl  BOOT 2
-				if(PRESS && (KEY[10]==PRESS_N))
+				KEY_Fxx[ 1] <= PRESS;	// F2  Ctrl or L-Shift BOOT 2
+				if(PRESS && (KEY[18]==PRESS_N))
 				begin
 					BOOTROM_EN			<=	1'b1;
-					BOOTROM_BANK		<=	17;
+					BOOTROM_BANK		<=	33;
+					RESET_KEY_COUNT		<=	17'h0;
+				end
+				else
+				if(PRESS && (KEY[10]==PRESS_N))
+				begin
+					AUTOSTARTROM_EN		<=	1'b1;
+					AUTOSTARTROM_BANK	<=	17;
 					RESET_KEY_COUNT		<=	17'h0;
 				end
 		end
 		8'h05:
 		begin
-				KEY_Fxx[ 0] <= PRESS;	// F1  Ctrl  BOOT 1
-				if(PRESS && (KEY[10]==PRESS_N))
+				KEY_Fxx[ 0] <= PRESS;	// F1  Ctrl or L-Shift BOOT 1
+				if(PRESS && (KEY[18]==PRESS_N))
 				begin
 					BOOTROM_EN			<=	1'b1;
-					BOOTROM_BANK		<=	16;
+					BOOTROM_BANK		<=	32;
+					RESET_KEY_COUNT		<=	17'h0;
+				end
+				else
+				if(PRESS && (KEY[10]==PRESS_N))
+				begin
+					AUTOSTARTROM_EN		<=	1'b1;
+					AUTOSTARTROM_BANK	<=	16;
 					RESET_KEY_COUNT		<=	17'h0;
 				end
 		end

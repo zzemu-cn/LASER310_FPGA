@@ -2,12 +2,15 @@
 开关1 加载 DOS ROM
 开关2 扩展绘图模式支持 SHRG
 
-开关3...5 地址0000H 16K系统 ROM 切换
-开关6...9 地址4000H 8K ROM 切换
+开关4...6 地址0000H 16K系统 ROM 切换
+开关7...9 地址4000H 8K ROM 切换
 
 键盘功能：上下左右，右Shift，Esc模拟Ctrl-Break, Backspace左
 Ctrl+F12 系统复位 reset
 button0 系统复位 reset
+
+Ctrl F1 ... F8  Auto Start ROM 自动化加载程序 固化程序 4000 D000 E000 F000
+L-Ctrl F1 ... F8 自动化加载 vz 文件，启动代码未完成
 
 左line in录音输入
 左line out录音输出
