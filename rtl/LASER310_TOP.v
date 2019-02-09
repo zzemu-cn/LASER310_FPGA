@@ -451,6 +451,9 @@ module LASER310_TOP(
 	//SEGMENT_N,
 	// LEDs
 	LED,
+`ifdef GPIO_PIN
+	LEDG,
+`endif
 	// Apple Perpherial
 	//SPEAKER,
 	//PADDLE,
@@ -478,6 +481,7 @@ module LASER310_TOP(
 	////////////////////	GPIO	////////////////////////////
 	GPIO_0,							//	GPIO Connection 0
 	GPIO_1,							//	GPIO Connection 1
+	GPIO_1_IN,							//	GPIO Connection 1
 `endif
 
 `ifdef UART_CHIP_EXT
@@ -677,6 +681,10 @@ input			PS2_KBDAT;
 // LEDs
 output	wire	[9:0]	LED;
 
+`ifdef GPIO_PIN
+output	wire	[9:0]	LEDG;
+`endif
+
 // Extra Buttons and Switches
 
 //input	[3:0]		SWITCH;
@@ -766,6 +774,7 @@ assign	BUTTON	=	~BUTTON_N;
 //inout	[35:0]	GPIO_1;		//	GPIO Connection 1
 output	[35:0]	GPIO_0;		//	GPIO Connection 0
 output	[35:0]	GPIO_1;		//	GPIO Connection 1
+input	[7:0]	GPIO_1_IN;		//	GPIO Connection 1
 `endif
 
 
@@ -807,12 +816,12 @@ reg					MEM_OP_WR;
 (*keep*)wire			CPU_M1;
 
 
-wire				CPU_BUSRQ;
-wire				CPU_BUSAK;
+wire					CPU_BUSRQ;
+wire					CPU_BUSAK;
 
-wire				CPU_RFSH;
+wire					CPU_RFSH;
 
-`ifdef NEXTZ80
+`ifdef	TV80
 
 (*keep*)wire			CPU_RESET_N;
 (*keep*)wire			CPU_HALT_N;
@@ -827,13 +836,12 @@ wire				CPU_RFSH;
 (*keep*)wire			CPU_NMI_N;
 (*keep*)wire			CPU_M1_N;
 
-wire				CPU_BUSRQ_N;
-wire				CPU_BUSAK_N;
+wire					CPU_BUSRQ_N;
+wire					CPU_BUSAK_N;
 
-wire				CPU_RFSH_N;
+wire					CPU_RFSH_N;
 
 `endif
-
 
 // VRAM
 (*keep*)wire	[12:0]	VRAM_ADDRESS;
@@ -1011,6 +1019,7 @@ wire				TURBO_SPEED		=	SWITCH[0];
 
 `ifdef GPIO_PIN
 wire				GPIO_SW			=	1'b1;
+wire	[7:0]		GPIO_IN;
 `else
 wire				GPIO_SW			=	1'b0;
 `endif
@@ -1265,6 +1274,9 @@ always @(posedge BASE_CLK or negedge RESET_N)
 					LATCHED_BANK_C000	<=	CPU_DO;
 `endif
 
+`ifdef GPIO_PIN
+`endif
+
 
 `ifdef RAM_ON_SRAM_CHIP
 				// 异步SRAM内存，锁存读写信号和地址，使能写信号
@@ -1478,7 +1490,13 @@ end
 
 
 //wire [7:0] InPort = ADDR[0] ? {3'b000, INP[2:0], vcount[9:8]} : vcount[7:0];
+
+`ifdef GPIO_PIN
+wire [7:0] InPort = GPIO_IN;
+`else
 wire [7:0] InPort = 8'b0;
+`endif
+
 
 // CPU
 
@@ -2651,7 +2669,10 @@ assign	GPIO_0[35:0]	=	36'bz;		//	GPIO Connection 0
 //assign	GPIO_1[35:0]	=	36'bz;		//	GPIO Connection 1
 
 `ifdef GPIO_TEST
-assign	GPIO_1[9:0]		=	{9'bz,GPIO_SW};
+assign	GPIO_IN			=	GPIO_1_IN[7:0];
+assign	LEDG			=	GPIO_IN;
+assign	GPIO_1[9:0]		=	10'bz;
+//assign	GPIO_1[9:0]		=	{9'bz,GPIO_SW};
 assign	GPIO_1[25:10]	=	{CPU_A[7:0],CPU_DO[7:0]};
 assign	GPIO_1[35:26]	=	{5'bz, CPU_IORQ_N, CPU_RD_N, CPU_WR_N, CPU_RESET_N, GPIO_CPU_CLK};
 `else
