@@ -812,7 +812,7 @@ wire				CPU_BUSAK;
 
 wire				CPU_RFSH;
 
-`ifdef NEXTZ80
+`ifdef TV80
 
 (*keep*)wire			CPU_RESET_N;
 (*keep*)wire			CPU_HALT_N;
