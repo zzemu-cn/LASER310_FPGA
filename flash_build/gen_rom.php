@@ -80,6 +80,15 @@ $rom_lst	=	[
 	[	"vtech/vzdosv12.rom",			8*4,	],	// 8K
 	[	"vtech/char.rom", 				8*4+2,	],	// 8K
 
+	[	"zx/zx80/zx80.rom", 			12*4,	],	// 8K
+	[	"zx/zx80/aszmic.rom", 			12*4+1,	],	// 8K
+
+	[	"zx/pc8300/8300_org.rom", 		13*4,	],	// 8K
+	[	"zx/zx81/zx81.rom", 			13*4+2,	],	// 8K
+	[	"zx/lambda/lambda.rom", 		14*4,	],	// 8K
+	[	"zx/LAM10061.BIN", 				14*4+2,	],	// 8K
+	[	"zx/8300_fnt.bin", 				15*4+2,	],	// 8K
+
 	//	bank 16 ... 31
 	//	16K 4 D E F
 	[	"autostart/Wordpro.bin",		16*4,	],	// 16K
