@@ -53,6 +53,14 @@ From,To,Assignment Name,Value,Enabled
 ,LED[7],Location,PIN_U18,Yes
 ,LED[8],Location,PIN_R18,Yes
 ,LED[9],Location,PIN_R17,Yes
+,LEDG[0],Location,PIN_U22,Yes
+,LEDG[1],Location,PIN_U21,Yes
+,LEDG[2],Location,PIN_V22,Yes
+,LEDG[3],Location,PIN_V21,Yes
+,LEDG[4],Location,PIN_W22,Yes
+,LEDG[5],Location,PIN_W21,Yes
+,LEDG[6],Location,PIN_Y22,Yes
+,LEDG[7],Location,PIN_Y21,Yes
 ,BUTTON_N[0],I/O Standard,LVTTL,Yes
 ,BUTTON_N[1],I/O Standard,LVTTL,Yes
 ,BUTTON_N[2],I/O Standard,LVTTL,Yes
@@ -67,6 +75,14 @@ From,To,Assignment Name,Value,Enabled
 ,LED[7],I/O Standard,LVTTL,Yes
 ,LED[8],I/O Standard,LVTTL,Yes
 ,LED[9],I/O Standard,LVTTL,Yes
+,LEDG[0],I/O Standard,LVTTL,Yes
+,LEDG[1],I/O Standard,LVTTL,Yes
+,LEDG[2],I/O Standard,LVTTL,Yes
+,LEDG[3],I/O Standard,LVTTL,Yes
+,LEDG[4],I/O Standard,LVTTL,Yes
+,LEDG[5],I/O Standard,LVTTL,Yes
+,LEDG[6],I/O Standard,LVTTL,Yes
+,LEDG[7],I/O Standard,LVTTL,Yes
 ,CLK50MHZ,Location,PIN_L1,Yes
 ,CLK50MHZ,I/O Standard,LVTTL,Yes
 ,PS2_KBCLK,Location,PIN_H15,Yes
@@ -243,14 +259,14 @@ From,To,Assignment Name,Value,Enabled
 ,GPIO_0[33],Location,PIN_K20,Yes
 ,GPIO_0[34],Location,PIN_L19,Yes
 ,GPIO_0[35],Location,PIN_L18,Yes
-,GPIO_1[0],Location,PIN_H12,Yes
-,GPIO_1[1],Location,PIN_H13,Yes
-,GPIO_1[2],Location,PIN_H14,Yes
-,GPIO_1[3],Location,PIN_G15,Yes
-,GPIO_1[4],Location,PIN_E14,Yes
-,GPIO_1[5],Location,PIN_E15,Yes
-,GPIO_1[6],Location,PIN_F15,Yes
-,GPIO_1[7],Location,PIN_G16,Yes
+,GPIO_1_IN[0],Location,PIN_H12,Yes
+,GPIO_1_IN[1],Location,PIN_H13,Yes
+,GPIO_1_IN[2],Location,PIN_H14,Yes
+,GPIO_1_IN[3],Location,PIN_G15,Yes
+,GPIO_1_IN[4],Location,PIN_E14,Yes
+,GPIO_1_IN[5],Location,PIN_E15,Yes
+,GPIO_1_IN[6],Location,PIN_F15,Yes
+,GPIO_1_IN[7],Location,PIN_G16,Yes
 ,GPIO_1[8],Location,PIN_F12,Yes
 ,GPIO_1[9],Location,PIN_F13,Yes
 ,GPIO_1[10],Location,PIN_C14,Yes
@@ -315,14 +331,14 @@ From,To,Assignment Name,Value,Enabled
 ,GPIO_0[33],I/O Standard,LVTTL,Yes
 ,GPIO_0[34],I/O Standard,LVTTL,Yes
 ,GPIO_0[35],I/O Standard,LVTTL,Yes
-,GPIO_1[0],I/O Standard,LVTTL,Yes
-,GPIO_1[1],I/O Standard,LVTTL,Yes
-,GPIO_1[2],I/O Standard,LVTTL,Yes
-,GPIO_1[3],I/O Standard,LVTTL,Yes
-,GPIO_1[4],I/O Standard,LVTTL,Yes
-,GPIO_1[5],I/O Standard,LVTTL,Yes
-,GPIO_1[6],I/O Standard,LVTTL,Yes
-,GPIO_1[7],I/O Standard,LVTTL,Yes
+,GPIO_1_IN[0],I/O Standard,LVTTL,Yes
+,GPIO_1_IN[1],I/O Standard,LVTTL,Yes
+,GPIO_1_IN[2],I/O Standard,LVTTL,Yes
+,GPIO_1_IN[3],I/O Standard,LVTTL,Yes
+,GPIO_1_IN[4],I/O Standard,LVTTL,Yes
+,GPIO_1_IN[5],I/O Standard,LVTTL,Yes
+,GPIO_1_IN[6],I/O Standard,LVTTL,Yes
+,GPIO_1_IN[7],I/O Standard,LVTTL,Yes
 ,GPIO_1[8],I/O Standard,LVTTL,Yes
 ,GPIO_1[9],I/O Standard,LVTTL,Yes
 ,GPIO_1[10],I/O Standard,LVTTL,Yes
