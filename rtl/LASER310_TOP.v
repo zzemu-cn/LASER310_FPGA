@@ -682,7 +682,7 @@ input			PS2_KBDAT;
 output	wire	[9:0]	LED;
 
 `ifdef GPIO_PIN
-output	wire	[9:0]	LEDG;
+output	wire	[7:0]	LEDG;
 `endif
 
 // Extra Buttons and Switches
@@ -2672,7 +2672,14 @@ assign	GPIO_0[35:0]	=	36'bz;		//	GPIO Connection 0
 
 `ifdef GPIO_TEST
 assign	GPIO_IN			=	GPIO_1_IN[7:0];
-assign	LEDG			=	GPIO_IN;
+//assign	LEDG			=	GPIO_IN;
+//assign	LEDG			=	CPU_A[7:0];
+//assign	LEDG			=	CPU_DO[7:0];
+//assign	LEDG			=	CPU_IORQ?CPU_A[7:0]:8'b0;
+//assign	LEDG			=	CPU_IORQ?CPU_DO[7:0]:8'b0;
+assign	LEDG			=	(CPU_IORQ&(CPU_WR||CPU_RD))?CPU_A[7:0]:8'b0;
+
+
 assign	GPIO_1[9:0]		=	10'bz;
 //assign	GPIO_1[9:0]		=	{9'bz,GPIO_SW};
 assign	GPIO_1[25:10]	=	{CPU_A[7:0],CPU_DO[7:0]};
