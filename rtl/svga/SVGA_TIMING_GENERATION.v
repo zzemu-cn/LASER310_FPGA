@@ -6,9 +6,17 @@
 // 1、(001)锁存 vram 地址，2、(010)读取 vram  3、(011)锁存 vram 数据 4、(100)字库地址 5、(101)锁存字库 
 // 6、(110)移位得到点阵，同时锁存vram数据用于调色板 7、(111)建立调色板，锁存色彩
 
+// Delay: Character mode
+// 1 (001) latch vram address, 2, (010) read vram 3, (011) latch vram data 4, (100) font address 5, (101) latch font
+// 6, (110) shift to get a lattice, while latching vram data for the palette 7, (111) to create a palette, latch color
+
 // 延时：图形模式 128x64 4色
 // 1、(001)锁存 vram 地址，2、(010)读取 vram  3、(011)锁存 vram 数据 4、(100)空 5、(101)数据锁存至移位寄存器
 // 6、(110)移位得到点阵 7、(111)建立调色板，锁存色彩
+
+// Delay: graphics mode 128x64 4 colors
+// 1, (001) latch vram address, 2, (010) read vram 3, (011) latch vram data 4, (100) empty 5, (101) data latched to the shift register
+// 6, (110) shift to get the dot matrix 7, (111) to create a palette, latch color
 
 module SVGA_TIMING_GENERATION
 (
