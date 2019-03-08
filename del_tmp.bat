@@ -2,6 +2,10 @@ del prj_de0\db\*.* /s /q
 del prj_de0\incremental_db\*.* /s /q
 @rem del prj_de0\output_files\*.* /s /q
 
+del prj_de0cv\db\*.* /s /q
+del prj_de0cv\incremental_db\*.* /s /q
+@rem del prj_de0cv\output_files\*.* /s /q
+
 del prj_de1\db\*.* /s /q
 del prj_de1\incremental_db\*.* /s /q
 @rem del prj_de1\output_files\*.* /s /q

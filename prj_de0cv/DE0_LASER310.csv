@@ -1,0 +1,117 @@
+# Copyright (C) 1991-2013 Altera Corporation
+# Your use of Altera Corporation's design tools, logic functions 
+# and other software and tools, and its AMPP partner logic 
+# functions, and any output files from any of the foregoing 
+# (including device programming or simulation files), and any 
+# associated documentation or information are expressly subject 
+# to the terms and conditions of the Altera Program License 
+# Subscription Agreement, Altera MegaCore Function License 
+# Agreement, or other applicable license agreement, including, 
+# without limitation, that your use is for the sole purpose of 
+# programming logic devices manufactured by Altera and sold by 
+# Altera or its authorized distributors.  Please refer to the 
+# applicable agreement for further details.
+
+# Quartus II 64-Bit Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Full Version
+# File: C:\Users\You\Desktop\DE0_Default.csv
+# Generated on: Thu Nov 15 18:13:42 2018
+
+# Note: The column header names should not be changed if you wish to import this .csv file into the Quartus II software.
+
+To,Direction,Location,I/O Bank,VREF Group,I/O Standard,Reserved,Current Strength,Slew Rate,Differential Pair
+LED[9],Unknown,PIN_B1,1,B1_N0,3.3-V LVTTL,,,,
+LED[8],Unknown,PIN_B2,1,B1_N0,3.3-V LVTTL,,,,
+LED[7],Unknown,PIN_C2,1,B1_N0,3.3-V LVTTL,,,,
+LED[6],Unknown,PIN_C1,1,B1_N0,3.3-V LVTTL,,,,
+LED[5],Unknown,PIN_E1,1,B1_N0,3.3-V LVTTL,,,,
+LED[4],Unknown,PIN_F2,1,B1_N0,3.3-V LVTTL,,,,
+LED[3],Unknown,PIN_H1,1,B1_N1,3.3-V LVTTL,,,,
+LED[2],Unknown,PIN_J3,1,B1_N1,3.3-V LVTTL,,,,
+LED[1],Unknown,PIN_J2,1,B1_N1,3.3-V LVTTL,,,,
+LED[0],Unknown,PIN_J1,1,B1_N1,3.3-V LVTTL,,,,
+SWITCH[9],Unknown,PIN_D2,1,B1_N0,3.3-V LVTTL,,,,
+SWITCH[8],Unknown,PIN_E4,1,B1_N0,3.3-V LVTTL,,,,
+SWITCH[7],Unknown,PIN_E3,1,B1_N0,3.3-V LVTTL,,,,
+SWITCH[6],Unknown,PIN_H7,1,B1_N0,3.3-V LVTTL,,,,
+SWITCH[5],Unknown,PIN_J7,1,B1_N1,3.3-V LVTTL,,,,
+SWITCH[4],Unknown,PIN_G5,1,B1_N0,3.3-V LVTTL,,,,
+SWITCH[3],Unknown,PIN_G4,1,B1_N0,3.3-V LVTTL,,,,
+SWITCH[2],Unknown,PIN_H6,1,B1_N0,3.3-V LVTTL,,,,
+SWITCH[1],Unknown,PIN_H5,1,B1_N0,3.3-V LVTTL,,,,
+SWITCH[0],Unknown,PIN_J6,1,B1_N0,3.3-V LVTTL,,,,
+BUTTON_N[2],Unknown,PIN_F1,1,B1_N0,3.3-V LVTTL,,,,
+BUTTON_N[1],Unknown,PIN_G3,1,B1_N0,3.3-V LVTTL,,,,
+BUTTON_N[0],Unknown,PIN_H2,1,B1_N1,3.3-V LVTTL,,,,
+PS2_KBCLK,UNKNOWN,PIN_P22,5,B5_N0,3.3-V LVTTL,,,,
+PS2_KBDAT,UNKNOWN,PIN_P21,5,B5_N0,3.3-V LVTTL,,,,
+# PS2_MSCLK,UNKNOWN,PIN_R21,5,B5_N0,3.3-V LVTTL,,,,
+# PS2_MSDATA,UNKNOWN,PIN_R22,5,B5_N0,3.3-V LVTTL,,,,
+VGA_GREEN[3],Unknown,PIN_J21,6,B6_N1,3.3-V LVTTL,,,,
+VGA_GREEN[2],Unknown,PIN_K17,6,B6_N1,3.3-V LVTTL,,,,
+VGA_GREEN[1],Unknown,PIN_J17,6,B6_N0,3.3-V LVTTL,,,,
+VGA_GREEN[0],Unknown,PIN_H22,6,B6_N1,3.3-V LVTTL,,,,
+VGA_HS,Unknown,PIN_L21,6,B6_N1,3.3-V LVTTL,,,,
+VGA_VS,Unknown,PIN_L22,6,B6_N1,3.3-V LVTTL,,,,
+VGA_RED[3],Unknown,PIN_H21,6,B6_N1,3.3-V LVTTL,,,,
+VGA_RED[2],Unknown,PIN_H20,6,B6_N0,3.3-V LVTTL,,,,
+VGA_RED[1],Unknown,PIN_H17,6,B6_N0,3.3-V LVTTL,,,,
+VGA_RED[0],Unknown,PIN_H19,6,B6_N0,3.3-V LVTTL,,,,
+VGA_BLUE[3],Unknown,PIN_K18,6,B6_N1,3.3-V LVTTL,,,,
+VGA_BLUE[2],Unknown,PIN_J22,6,B6_N1,3.3-V LVTTL,,,,
+VGA_BLUE[1],Unknown,PIN_K21,6,B6_N1,3.3-V LVTTL,,,,
+VGA_BLUE[0],Unknown,PIN_K22,6,B6_N1,3.3-V LVTTL,,,,
+CLK50MHZ,Unknown,PIN_G21,6,B6_N1,3.3-V LVTTL,,,,
+
+UART_RXD,Unknown,PIN_U22,5,B5_N0,3.3-V LVTTL,,,,
+UART_TXD,Unknown,PIN_U21,5,B5_N0,3.3-V LVTTL,,,,
+UART_RTS,Unknown,PIN_V22,5,B5_N1,3.3-V LVTTL,,,,
+UART_CTS,Unknown,PIN_V21,5,B5_N1,3.3-V LVTTL,,,,
+
+#FL_DQ15_AM1,Unknown,PIN_Y2,2,B2_N1,3.3-V LVTTL,,,,
+FL_ADDRESS[0],Unknown,PIN_Y2,2,B2_N1,3.3-V LVTTL,,,,
+
+FL_ADDRESS[22],Unknown,PIN_R2,2,B2_N0,3.3-V LVTTL,,,,
+FL_ADDRESS[21],Unknown,PIN_P3,2,B2_N0,3.3-V LVTTL,,,,
+FL_ADDRESS[20],Unknown,PIN_P1,2,B2_N0,3.3-V LVTTL,,,,
+FL_ADDRESS[19],Unknown,PIN_M6,2,B2_N0,3.3-V LVTTL,,,,
+FL_ADDRESS[18],Unknown,PIN_M5,2,B2_N0,3.3-V LVTTL,,,,
+FL_ADDRESS[17],Unknown,PIN_AA2,2,B2_N1,3.3-V LVTTL,,,,
+FL_ADDRESS[16],Unknown,PIN_L6,2,B2_N0,3.3-V LVTTL,,,,
+FL_ADDRESS[15],Unknown,PIN_L7,2,B2_N0,3.3-V LVTTL,,,,
+FL_ADDRESS[14],Unknown,PIN_M1,2,B2_N0,3.3-V LVTTL,,,,
+FL_ADDRESS[13],Unknown,PIN_M2,2,B2_N0,3.3-V LVTTL,,,,
+FL_ADDRESS[12],Unknown,PIN_M3,2,B2_N0,3.3-V LVTTL,,,,
+FL_ADDRESS[11],Unknown,PIN_N1,2,B2_N0,3.3-V LVTTL,,,,
+FL_ADDRESS[10],Unknown,PIN_N2,2,B2_N0,3.3-V LVTTL,,,,
+FL_ADDRESS[9],Unknown,PIN_P2,2,B2_N0,3.3-V LVTTL,,,,
+FL_ADDRESS[8],Unknown,PIN_M4,2,B2_N0,3.3-V LVTTL,,,,
+FL_ADDRESS[7],Unknown,PIN_M8,2,B2_N1,3.3-V LVTTL,,,,
+FL_ADDRESS[6],Unknown,PIN_N6,2,B2_N0,3.3-V LVTTL,,,,
+FL_ADDRESS[5],Unknown,PIN_N5,2,B2_N0,3.3-V LVTTL,,,,
+FL_ADDRESS[4],Unknown,PIN_N7,2,B2_N1,3.3-V LVTTL,,,,
+FL_ADDRESS[3],Unknown,PIN_P6,2,B2_N1,3.3-V LVTTL,,,,
+FL_ADDRESS[2],Unknown,PIN_P5,2,B2_N0,3.3-V LVTTL,,,,
+FL_ADDRESS[1],Unknown,PIN_P7,2,B2_N1,3.3-V LVTTL,,,,
+FL_BYTE_N,Unknown,PIN_AA1,2,B2_N1,3.3-V LVTTL,,,,
+FL_CE_N,Unknown,PIN_N8,2,B2_N1,3.3-V LVTTL,,,,
+FL_DATA[0],Unknown,PIN_R7,2,B2_N1,3.3-V LVTTL,,,,
+FL_DATA[1],Unknown,PIN_P8,2,B2_N1,3.3-V LVTTL,,,,
+FL_DATA[2],Unknown,PIN_R8,2,B2_N1,3.3-V LVTTL,,,,
+FL_DATA[3],Unknown,PIN_U1,2,B2_N0,3.3-V LVTTL,,,,
+FL_DATA[4],Unknown,PIN_V2,2,B2_N0,3.3-V LVTTL,,,,
+FL_DATA[5],Unknown,PIN_V3,2,B2_N1,3.3-V LVTTL,,,,
+FL_DATA[6],Unknown,PIN_W1,2,B2_N1,3.3-V LVTTL,,,,
+FL_DATA[7],Unknown,PIN_Y1,2,B2_N1,3.3-V LVTTL,,,,
+#FL_DATA[8],Unknown,PIN_T5,2,B2_N1,3.3-V LVTTL,,,,
+#FL_DATA[9],Unknown,PIN_T7,2,B2_N1,3.3-V LVTTL,,,,
+#FL_DATA[10],Unknown,PIN_T4,2,B2_N1,3.3-V LVTTL,,,,
+#FL_DATA[11],Unknown,PIN_U2,2,B2_N0,3.3-V LVTTL,,,,
+#FL_DATA[12],Unknown,PIN_V1,2,B2_N0,3.3-V LVTTL,,,,
+#FL_DATA[13],Unknown,PIN_V4,2,B2_N1,3.3-V LVTTL,,,,
+#FL_DATA[14],Unknown,PIN_W2,2,B2_N1,3.3-V LVTTL,,,,
+FL_OE_N,Unknown,PIN_R6,2,B2_N1,3.3-V LVTTL,,,,
+FL_RESET_N,Unknown,PIN_R1,2,B2_N0,3.3-V LVTTL,,,,
+FL_RY,Unknown,PIN_M7,2,B2_N0,3.3-V LVTTL,,,,
+FL_WE_N,Unknown,PIN_P4,2,B2_N0,3.3-V LVTTL,,,,
+FL_WP_N,Unknown,PIN_T3,2,B2_N1,3.3-V LVTTL,,,,
+
