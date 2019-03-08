@@ -4,8 +4,8 @@ Welcome to LASER310_FPGA project. This project is an attempt to recreate the onc
 
 <img src="doc/images/Laser310onVGA.jpeg" alt="Laser310 on VGA" width="400"/>
 
-***Software requirment:***
-Quartus 13.0 web edition for projects except DE0_CV. For DE0_CV, you need 18.0 or newer.
+***Software requirment:***   
+Quartus 13.0 web edition for projects except DE0_CV. For DE0_CV, you need 18.0 or newer.   
 
 ***Features implemented:***
 1. MC6847 /w VGA output
