@@ -1,8 +1,0 @@
-	component C5_CLK10MHZ_PLL is
-		port (
-			refclk   : in  std_logic := 'X'; -- clk
-			rst      : in  std_logic := 'X'; -- reset
-			outclk_0 : out std_logic         -- clk
-		);
-	end component C5_CLK10MHZ_PLL;
-

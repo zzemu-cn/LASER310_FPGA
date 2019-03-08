@@ -1,15 +1,9 @@
 `timescale 1 ns / 1 ns
 
 // 使用FPGA外部 SRAM 芯片，数据口同时完成输入输出。一定要仔细调整时序，防止两个输出撞车。
-// Using the FPGA's external SRAM chip, the data port completes both input and output. 
-// Be sure to carefully adjust the timing to prevent the two outputs from crashing.
 
 // 设计中，sys_rom 和 2K RAM 作为基础系统，保证系统最低需求。
 // 即使 flash 不能成功写入，也不影响系统运行。
-// sys_rom_altera sys_rom(); ram_2k_altera sys_ram_2k();
-
-// In the design, sys_rom and 2K RAM are used as the base system to ensure the minimum system requirements.
-// Even if the flash cannot be successfully written, it does not affect the system operation.
 // sys_rom_altera sys_rom(); ram_2k_altera sys_ram_2k();
 
 
@@ -23,13 +17,10 @@
 
 
 // 如果烧写 FLASH 成功，可以打开 ROM_ON_FLASH 选项。这样能提供更强的功能。
-// If the FLASH is successfully programmed, the ROM_ON_FLASH option can be turned on. This provides a stronger function. ??
 `define ROM_ON_FLASH
 
 // 选择开发板
-// Select development board
 //`define	DE0
-//`define	DE0_CV
 `define	DE1
 //`define	DE2
 //`define	DE2_70
@@ -40,19 +31,13 @@
 //`define	NEXTZ80
 
 // 模拟磁带
-// Analog Tape
 `define CASS_EMU
 
 // 扩展绘图模式支持
-// Extended drawing mode support
 `define SHRG
 
 
 // 内存有三种配置方案：1、通过 FPGA 片上内存支持 16K  2、通过 FPGA 片上内存支持 16K 和 16K 扩展内存  3、通过 SRAM 或 SSRAM 支持 256K 扩展内存
-// There are three configuration schemes for memory: 
-// 1. Support 16K through on-chip memory of FPGA
-// 2. Support 16K and 16K extended memory through FPGA on-chip memory 
-// 3. Support 256K extended memory through SRAM or SSRAM
 
 `ifdef DE0
 
@@ -71,7 +56,6 @@
 //`define	BASE_RAM_78
 
 // 用来从FLASH自动加载程序
-// Used to automatically load programs from FLASH
 `define BOOT_ROM_6000
 
 `define RAM_ON_FPGA
@@ -104,30 +88,7 @@
 
 `endif
 
-//============================================
-`ifdef DE0_CV
-// DE0_CV has no flash chip
 
-`define FPGA_ALTERA
-`define FPGA_ALTERA_C5
-`define CLOCK_50MHZ
-`define VGA_RESISTOR
-`define VGA_BIT12
-`define AUDIO_GPIO
-//`define UART_CHIP
-//`define UART_CHIP_EXT
-`define	BASE_SYS_ROM
-//`define	BASE_DOS_ROM
-//`define	BASE_RAM_78
-
-`define RAM_ON_FPGA
-`define	BASE_RAM_16K
-`define	RAM_16K_EXPANSION
-`define CASS_EMU_4K
-`define VRAM_8K
-
-`endif
-//=============================================
 
 `ifdef DE1
 
@@ -819,24 +780,10 @@ input	[7:0]	GPIO_1_IN;		//	GPIO Connection 1
 
 // 10MHz 的频率用于模块计数， 包括产生 50HZ 的中断信号的时钟，uart 模块的时钟，模拟磁带模块的时钟
 // 选择 10MHz 是因为 Cyclone II 的DLL 分频最多能到 5。最初打算用 1MHz。
-
 wire				CLK10MHZ;
-
-// Cyclone V uses different PLL component to C2-C4
-
-`ifdef FPGA_ALTERA_C5
-C5_CLK10MHZ_PLL C5_CLK10MHZ_PLL_INST(
-		.refclk   (CLK50MHZ),
-		.rst      (CPU_RESET),
-		.outclk_0 (CLK10MHZ),
-	);
-	
-`else
 CLK10MHZ_PLL CLK10MHZ_PLL_INST(
 	CLK50MHZ,
 	CLK10MHZ);
-	
-`endif
 
 // CLOCK & BUS
 (*keep*)wire				BASE_CLK = CLK50MHZ;
@@ -1130,23 +1077,13 @@ VGA_Audio_PLL  VGA_AUDIO_PLL(.inclk0(CLK27MHZ),.c0(VGA_CLK),.c1(AUD_CTRL_CLK));
 
 // 频率 50HZ
 // 回扫周期暂定为：2线 x 800点 x 10MHZ / 25MHZ
-// The retrace period is tentatively set to: 2 lines x 800 points x 10MHZ / 25MHZ
 
 // ~FS 垂直同步信号，送往IC1、IC2称IC4。6847对CPU的唯一直接影响，便是它的~FS输出被作为Z80A的~INT控制信号；
-// ~FS vertical sync signal, sent to IC1, IC2 called IC4. 
-// The only direct impact of 6847 on the CPU is that its ~FS output is used as the ~INT control signal of Z80A;
-
 // 每一场扫描结束，6847的~FS信号变低，便向Z80A发出中断请求。在PAL制中，场频为50Hz，每秒就有50次中断请求，以便系统程序利用场消隐期运行监控程序，访问显示RAM。
-// At the end of each scan, the ~FS signal of 6847 goes low and an interrupt request is issued to the Z80A. 
-// In the PAL system, the field rate is 50 Hz, and there are 50 interrupt requests per second, 
-// so that the system program can use the field blanking period to run the monitor program and access the display RAM.
 
 // 在加速模式中，要考虑对该计数器的影响
-// In acceleration mode, consider the impact on this counter
 
 // 系统中断：简化处理是直接接到 VGA 的垂直回扫信号，频率60HZ。带来的问题是软件计时器会产生偏差。
-// System interrupt: Simplified processing is a vertical retrace signal directly connected to the VGA, frequency 60HZ. 
-// The problem is that the software timer will be biased.
 
 reg 		[17:0]	INT_CNT;
 
@@ -1185,11 +1122,7 @@ always @ (negedge CLK10MHZ)
 // 写 0 CPU 写信号和地址 1 锁存写和地址 2 完成写操作
 // 读 0 CPU 读信号和地址 1 锁存读和地址 2 完读写操作，开始输出数据
 
-// Write 0 CPU write signal and address 1 latch write and address 2 complete write operation
-// Read 0 CPU read signal and address 1 Latch read and address 2 End read and write operations, output data
-
 // 读取需要中间间隔一个时钟
-// Reading requires an interval between the clocks
 
 
 `ifdef SIMULATE
@@ -2232,20 +2165,10 @@ initial
 // 可为任意值，故68FEH，69FEH，6AFEH，6BFEH，6CFEH，6DFEH，6EFEH，6FFEH均可）。
 // 读 6800H 判断是否有按键按下。
 
-// The method of keyboard detection is to cyclically ask each line to send a low level signal, 
-// that is, to read the data with the address line "0".
-// For example, when detecting the first line, make A0 0 and the rest 1; plus the high five-bit address 01101 of the strobe IC4, 
-// become 01101***11111110B (A8~A10 does not work,
-// It can be any value, so 68FEH, 69FEH, 6AFEH, 6BFEH, 6CFEH, 6DFEH, 6EFEH, 6FFEH can be).
-// Read 6800H to determine if there is a button press.
-
 // 键盘选通，整个竖列有一个选通的位置被按下，对应值为0。
-// The keyboard is strobed, and a strobe position is pressed in the entire vertical column, and the corresponding value is 0.
 
 // 键盘扩展
 // 加入方向键盘
-// Keyboard extension
-
 // left:  ctrl M      37 KEY_EX[5]
 // right: ctrl ,      35 KEY_EX[6]
 // up:    ctrl .      33 KEY_EX[4]

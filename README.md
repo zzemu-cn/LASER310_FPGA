@@ -29,7 +29,6 @@ IORQ output n,5 captured on GPIO1
 ***Supported boards***
 
 - Terasic DE0
-- Terasic DE0_CV
 - Terasic DE1
 - Terasic DE2
 - Terasic DE2-70
