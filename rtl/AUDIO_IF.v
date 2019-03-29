@@ -47,7 +47,7 @@ input				iRST_N;
 
 //output [7:0] sample_high8;
 
-(*keep*)wire				BCK;
+(*keep*)wire				BCLK;
 (*keep*)wire		[4:0]	BCLK_CONT;
 (*keep*)wire				LRCK;
 
@@ -60,7 +60,7 @@ input				iRST_N;
 reg		[5:0]	Snd_Cont;
 
 ////////////////////////////////////
-wire		[DATA_WIDTH-1:0]	Snd_Out;
+//wire		[DATA_WIDTH-1:0]	Snd_Out;
 
 
 reg		SPK_A;
@@ -129,16 +129,17 @@ assign	sample = LRCK ? ( (iCASS_OUT[0]==iCASS_OUT[1]) ? 16'h0000 : (iCASS_OUT[1]
 ////////////	Sin Wave ROM Table	//////////////
 
 // 未使用，打算改善喇叭输入的音质
+/*
 //wave_gen_brass snd_tbl
 //wave_gen_ramp snd_tbl
 //wave_gen_string snd_tbl
-wave_gen_sin snd_tbl
 //wave_gen_square	snd_tbl
+wave_gen_sin snd_tbl
 (
 	.ramp(Snd_Cont),
 	.music_o(Snd_Out)
 );
-
+*/
 
 // ADC
 
