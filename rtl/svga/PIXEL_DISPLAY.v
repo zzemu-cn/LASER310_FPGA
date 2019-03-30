@@ -1,64 +1,38 @@
 module PIXEL_DISPLAY (
-	pixel_clock,
-	reset,
 
-	show_border,
+input					pixel_clock,
+input					reset,
+     
+input					show_border,
+input					width_64,			// 64x16 text mode
 
 	// mode
-	ag,
-	gm,
-	css,
+input					ag,					// _A/G     	_Alphanumeric/Graphics   
+input					css,				// CSS			Colour Set Select. 0 = BLACK/GREEN, 1 = BLACK/ORANGE   
+input			[2:0]	gm,					// GM[2:0]		Select 1 of 8 Gfx modes when _AG == 0           
+											// fixed graphic 010 mode = 128x64 colour on stock machine      
 
 	// text
-	char_column,
-	char_line,
-	subchar_line,
-	subchar_pixel,
+input			[6:0]	char_column,		  // character number on the current line         
+input			[6:0]	char_line,			  // line number on the screen                    
+input			[4:0]	subchar_line,		  // the line number within a character block 0-8 
+input			[3:0]	subchar_pixel,		  // the pixel number within a character block 0-8
 
 	// graph
-	graph_pixel,
-	graph_line_2x,
-	graph_line_3x,
+input			[8:0]	graph_pixel,		  // pixel number on the current line   
+input			[9:0]	graph_line_2x,		  // line number on the screen          
+input			[9:0]	graph_line_3x,		  // line number on the screen          
 
 	// vram
-	vram_rd_enable,
-	vram_addr,
-	vram_data,
+output					vram_rd_enable,		// Clock out for vram == pixel clock
+output	reg		[12:0]	vram_addr,			// Current Address in Video Ram
+input			[7:0] 	vram_data,			// Data back from video ram
 
 	// vga
-	vga_red,
-	vga_green,
-	vga_blue
+output			[7:0]	vga_red,
+output			[7:0]	vga_green,
+output			[7:0]	vga_blue
 );
-
-input					pixel_clock;
-input					reset;
-
-input					show_border;
-
-// mode
-input					ag;
-input			[2:0]	gm;
-input					css;
-
-// text
-input			[6:0]	char_column;		// character number on the current line
-input			[6:0]	char_line;			// line number on the screen
-input			[4:0]	subchar_line;		// the line number within a character block 0-8
-input			[3:0]	subchar_pixel;		// the pixel number within a character block 0-8
-
-// graph
-input			[8:0]	graph_pixel;		// pixel number on the current line
-input			[9:0]	graph_line_2x;		// line number on the screen
-input			[9:0]	graph_line_3x;		// line number on the screen
-
-output					vram_rd_enable;
-output	reg		[12:0]	vram_addr;
-input			[7:0] 	vram_data;
-
-output			[7:0]	vga_red;
-output			[7:0]	vga_green;
-output			[7:0]	vga_blue;
 
 
 //// Label Definitions ////
@@ -71,8 +45,8 @@ output			[7:0]	vga_blue;
 wire				pixel_on;					// high => output foreground color, low => output background color
 
 
-// 8p   代表每个点占用VGA水平 8 pixel
-// 2bit 代表每个点取2位值
+// 8p   代表每个点占用VGA水平 8 pixel	: Represents each point occupying VGA level
+// 2bit 代表每个点取2位值				: Take 2 digits for each point
 
 wire	[1:0]		pixel_8p_2bit;				// high => output foreground color, low => output background color
 wire	[1:0]		pixel_4p_2bit;				// high => output foreground color, low => output background color
@@ -92,11 +66,16 @@ wire	[23:0] vga_rgb;
 // write the appropriate character data to memory
 
 always @ (posedge pixel_clock) begin
-	if(ag==1'b0)
+	if(ag==1'b0)	// text mode
 	begin
 			if(subchar_pixel==4'b0001)
-				vram_addr <= {4'b0,char_line[3:0], char_column[4:0]};
-			// 对于同步sram需要等待 1 个时钟周期
+				begin
+				if (width_64)
+					vram_addr <= {char_line[3:0], char_column[5:0]};			// 64x16 text
+				else
+					vram_addr <= {4'b0,char_line[3:0], char_column[4:0]};		// 32x16 text
+				end
+				// 对于同步sram需要等待 1 个时钟周期	Waiting for 1 clock cycle for synchronous sram
 			if(subchar_pixel==4'b0011)
 				latched_vram_data <= vram_data;
 			if(graph_pixel[3:0]==4'b0110)
@@ -185,6 +164,7 @@ end
 
 // palette
 /*
+Bit\Color	Green	Yellow	Blue	Red		LtYell	Lt Blue Purple Orange
 位\色  绿   黄   蓝   红   浅黄  浅蓝  紫   橙
 D6     0    0    0    0    1     1     1    1
 D5     0    0    1    1    0     0     1    1
@@ -208,8 +188,8 @@ D4     0    1    0    1    0     1     0    1
 
 wire [2:0]	palette_bit_graph;
 
-wire [23:0]	palette_rgb_border =	(~ag)?24'h000000:				// 字符模式背景
-									(css)?24'hffffff:24'h07ff00;	// 图形模式背景
+wire [23:0]	palette_rgb_border =	(~ag)?24'h000000:				// 字符模式背景	Character pattern background
+									(css)?24'hffffff:24'h07ff00;	// 图形模式背景	Graphic mode background
 
 wire [23:0] palette_rgb_pixel = 24'h000000;
 wire [23:0] palette_rgb_background = 24'h07ff00;
@@ -225,7 +205,7 @@ wire [23:0] palette_rgb_background = 24'h07ff00;
 
 //assign palette_bit_graph = (ag)? {css, pixel_4p_2bit} : latched_palette_data[6:4];
 
-assign palette_bit_graph		=	(~ag)			?	latched_palette_data[6:4]				:
+assign palette_bit_graph		=	(~ag)			?	latched_palette_data[6:4]				:	// text
 									(gm==3'b000)	?	{css, pixel_8p_2bit					}	:
 									(gm==3'b001)	?	{css, pixel_4p_1bit, pixel_4p_1bit	}	:
 									(gm==3'b010)	?	{css, pixel_4p_2bit					}	:
@@ -233,7 +213,7 @@ assign palette_bit_graph		=	(~ag)			?	latched_palette_data[6:4]				:
 									(gm==3'b100)	?	{css, pixel_4p_2bit					}	:
 									(gm==3'b101)	?	{css, pixel_4p_1bit, pixel_4p_1bit	}	:
 									(gm==3'b110)	?	{css, pixel_4p_2bit					}	:
-														{css, pixel_2p_1bit, pixel_2p_1bit	}	;
+														{css, pixel_2p_1bit, pixel_2p_1bit	}	;	// gm = 111
 
 wire [23:0] palette_rgb_graph =	(palette_bit_graph==3'b000) ?	24'h07ff00 : // GREEN
 								(palette_bit_graph==3'b001) ?	24'hffff00 : // YELLOW
@@ -257,7 +237,8 @@ wire [23:0] palette_rgb_graph =	(palette_bit_graph==3'b000) ?	24'h07ff00 : // GR
 assign vga_rgb =	(show_border)	? palette_rgb_border :
 					(ag)			? palette_rgb_graph :
 					(~pixel_on)		? palette_rgb_pixel :
-					(latched_palette_data[7])	? palette_rgb_graph : palette_rgb_background;
+					(latched_palette_data[7])	? palette_rgb_graph : 
+												  palette_rgb_background;
 
 assign vga_red = latched_vga_rgb[23:16];
 assign vga_green = latched_vga_rgb[15:8];
@@ -269,6 +250,9 @@ assign vga_blue = latched_vga_rgb[7:0];
 CHAR_GEN CHAR_GEN
 (
 	.reset(reset),					// reset signal
+
+	.GM0(gm[0]),						// required to enable lower case
+	.width_64(width_64),				// 64x16 text mode	
 
 	.char_code(latched_vram_data),
 	.subchar_line(subchar_line),	// current line of pixels within current character

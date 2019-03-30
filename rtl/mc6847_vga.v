@@ -2,46 +2,32 @@
 // mc6847
 
 module MC6847_VGA(
-PIX_CLK,
-RESET_N,
+	input			PIX_CLK,
+	input			RESET_N,
+	
+	input 		width_64,		// select 64x16 text screen mode
+	
+// memory interface
+	output			RD,				// Read request output
+	output	[12:0]	DA,				// 8KB Address space 
+	input	[7:0]	DD,				// Data from mem
 
-RD,
-DD,
-DA,
-
-AG,
-AS,
-EXT,
-INV,
-GM,
-CSS,
-
-// vga
-VGA_OUT_HSYNC,
-VGA_OUT_VSYNC,
-VGA_OUT_RED,
-VGA_OUT_GREEN,
-VGA_OUT_BLUE
+// control Inputs
+	input			AG,				// _A/G     	_Alphanumeric/Graphics                                
+	input			AS,				// _A/S			_Alphanumeric/Semi-Graphics                           
+	input			EXT,			// _INT/EXT		_Internal/external                                    
+	input			INV,			// INV			0 = normal, 1 = inverse                               
+	input			CSS,			// CSS			Colour Set Select. 0 = BLACK/GREEN, 1 = BLACK/ORANGE                                                                        
+	input	[2:0]	GM,				// GM[2:0]		Select 1 of 8 Gfx modes when _AG == 0                 
+									// fixed graphic 010 mode = 128x64 colour on stock machine                                                                             
+// vga out							                     
+	output			VGA_OUT_HSYNC,	                                                                      
+	output			VGA_OUT_VSYNC,	
+	output	[7:0]	VGA_OUT_RED,
+	output	[7:0]	VGA_OUT_GREEN,
+	output	[7:0]	VGA_OUT_BLUE
 );
 
-input			PIX_CLK;
-input			RESET_N;
-
-output	wire			RD;
-output	wire	[12:0]	DA;		// 8KB
-input			[7:0]	DD;
-input					AG;
-input					AS;
-input					EXT;
-input					INV;
-input					CSS;
-input			[2:0]	GM;
-
-output	wire			VGA_OUT_HSYNC;
-output	wire			VGA_OUT_VSYNC;
-output	wire	[7:0]	VGA_OUT_RED;
-output	wire	[7:0]	VGA_OUT_GREEN;
-output	wire	[7:0]	VGA_OUT_BLUE;
 
 
 reg				LATCHED_AG;
@@ -62,21 +48,21 @@ wire	[7:0]	vga_blue;				// blue video data
 wire 			h_synch;					// horizontal synch for VGA connector
 wire 			v_synch;					// vertical synch for VGA connector
 wire 			blank;						// composite blanking
-wire	[10:0]	pixel_count;				// bit mapped pixel position within the line
-wire	[9:0]	line_count;					// bit mapped line number in a frame lines within the frame
+wire	[10:0]	pixel_count;				// bit mapped pixel position within the line					0-2048
+wire	[9:0]	line_count;					// bit mapped line number in a frame lines within the frame		0-1023
 
 wire			show_border;
 
 // text
-wire	[3:0]	subchar_pixel;				// pixel position within the character
-wire	[4:0]	subchar_line;				// identifies the line number within a character block
-wire	[6:0]	char_column;				// character number on the current line
-wire	[6:0]	char_line;					// line number on the screen
+wire	[3:0]	subchar_pixel;				// pixel position within the character					0-15
+wire	[4:0]	subchar_line;				// identifies the line number within a character block	0-31
+wire	[6:0]	char_column;				// character number on the current line					0-128
+wire	[6:0]	char_line;					// line number on the screen							0-128
 
 // graph
-wire	[8:0]	graph_pixel;				// pixel number on the current line
-wire	[9:0]	graph_line_2x;				// line number on the screen
-wire	[9:0]	graph_line_3x;				// line number on the screen
+wire	[8:0]	graph_pixel;				// pixel number on the current line						0-511
+wire	[9:0]	graph_line_2x;				// line number on the screen							0-1023
+wire	[9:0]	graph_line_3x;				// line number on the screen							0-1023
 
 /*
 wire	[11:0]	ROM_ADDRESS;
@@ -100,6 +86,10 @@ char_rom_4k_altera char_rom(
 */
 
 // 为了防止闪屏，再垂直回扫信号产生时，锁存模式信号。
+// In order to prevent the splash screen, mode controls are sampled only on the vertical mode retrace signal.
+
+// ** This is incorrect **
+// *REAL* 6847 allows the AS,EXT,CSS and INV signals to be changed on a "character by character basis".
 
 always @ (posedge v_synch or negedge RESET_N)
 begin
@@ -131,6 +121,7 @@ PIXEL_DISPLAY PIXEL_DISPLAY(
 	// mode
 	.ag(LATCHED_AG),
 	.gm(LATCHED_GM),
+	.width_64(width_64),
 	.css(LATCHED_CSS),
 	// text
 	.char_column(char_column),
@@ -154,45 +145,45 @@ PIXEL_DISPLAY PIXEL_DISPLAY(
 // instantiate the video timing generator
 SVGA_TIMING_GENERATION SVGA_TIMING_GENERATION
 (
-	pixel_clock,
-	reset,
-	h_synch,
-	v_synch,
-	blank,
-	pixel_count,
-	line_count,
-
-	show_border,
+	.pixel_clock(pixel_clock),
+	.reset(reset),
+	.h_synch(h_synch),
+	.v_synch(v_synch),
+	.blank(blank),
+	.pixel_count(pixel_count),
+	.line_count(line_count),
+	.show_border(show_border),
+	.width_64(width_64),
 
 	// text
-	subchar_pixel,
-	subchar_line,
-	char_column,
-	char_line,
+	.subchar_pixel(subchar_pixel),
+	.subchar_line(subchar_line),
+	.char_column(char_column),
+	.char_line(char_line),
 
 	// graph
-	graph_pixel,
-	graph_line_2x,
-	graph_line_3x
+	.graph_pixel(graph_pixel),  
+	.graph_line_2x(graph_line_2x),
+	.graph_line_3x(graph_line_3x) 
 );
 
 // instantiate the video output mux
 VIDEO_OUT VIDEO_OUT
 (
-	pixel_clock,
-	reset,
-	vga_red,
-	vga_green,
-	vga_blue,
-	h_synch,
-	v_synch,
-	blank,
+	.pixel_clock(pixel_clock),
+	.reset(reset),
+	.vga_red_data(vga_red),
+	.vga_green_data(vga_green),
+	.vga_blue_data(vga_blue),
+	.h_synch(h_synch),
+	.v_synch(v_synch),
+	.blank(blank),
 
-	VGA_OUT_HSYNC,
-	VGA_OUT_VSYNC,
-	VGA_OUT_RED,
-	VGA_OUT_GREEN,
-	VGA_OUT_BLUE
+	.VGA_OUT_HSYNC(VGA_OUT_HSYNC),
+	.VGA_OUT_VSYNC(VGA_OUT_VSYNC),
+	.VGA_OUT_RED(VGA_OUT_RED),
+	.VGA_OUT_GREEN(VGA_OUT_GREEN),
+	.VGA_OUT_BLUE(VGA_OUT_BLUE)
 );
 
 endmodule

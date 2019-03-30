@@ -24,13 +24,13 @@
 
 // 如果烧写 FLASH 成功，可以打开 ROM_ON_FLASH 选项。这样能提供更强的功能。
 // If the FLASH is successfully programmed, the ROM_ON_FLASH option can be turned on. This provides a stronger function. ??
-`define ROM_ON_FLASH
+//`define ROM_ON_FLASH
 
 // 选择开发板
 // Select development board
 //`define	DE0
-//`define	DE0_CV
-`define	DE1
+`define	DE0_CV
+//`define	DE1
 //`define	DE2
 //`define	DE2_70
 //`define	DE2_115
@@ -47,6 +47,28 @@
 // Extended drawing mode support
 `define SHRG
 
+//=========================================================================================================
+
+// Enable Lower Case chars in $00-$1F range
+// Also requires SHRG extension active to allow access to GM0 bit
+// GM0 = 0 selects INVERSE, GM0 = 1 selects L/CASE in Text mode (LATCHED_IO_SHRG[2] in Port $20)
+
+// OUT 32,12 selects Lower Case chars, OUT 32,8 selects INVERSE chars.
+ 
+// Mimics the behaviour of the 6847T1 chip.
+// affects char gen rom select in module: char_gen_rom
+
+`define LCASE		
+
+//=========================================================================================================
+
+// enable 64x16 text mode sysrom load.
+// SWITCH 3 OFF selects 32x16 text mode, SWITCH3 ON selects 64x16 text mode
+// only supported by ON-CHIP rom image at this point in time.
+
+`define WIDTH_64
+
+//=========================================================================================================
 
 // 内存有三种配置方案：1、通过 FPGA 片上内存支持 16K  2、通过 FPGA 片上内存支持 16K 和 16K 扩展内存  3、通过 SRAM 或 SSRAM 支持 256K 扩展内存
 // There are three configuration schemes for memory: 
@@ -820,6 +842,10 @@ input	[7:0]	GPIO_1_IN;		//	GPIO Connection 1
 // 10MHz 的频率用于模块计数， 包括产生 50HZ 的中断信号的时钟，uart 模块的时钟，模拟磁带模块的时钟
 // 选择 10MHz 是因为 Cyclone II 的DLL 分频最多能到 5。最初打算用 1MHz。
 
+// The frequency is used for the module count, including the clock that generates the 
+// 50HZ interrupt signal, the clock of the uart module, and the clock of the analog tape module.
+// The 10MHz is chosen because the Cyclone II PLL can be divided up to 5. Originally intended to use 1MHz.
+
 wire				CLK10MHZ;
 
 // Cyclone V uses different PLL component to C2-C4
@@ -971,13 +997,23 @@ wire				ADDRESS_IO_BANK;
 wire				ADDRESS_RAM_CHIP;
 
 /*
-74LS174输出的各个控制信号是：
+74LS174输出的各个控制信号是：  $6800-$6FFF write
+
 Q5 蜂鸣器B端电平
 Q4 IC15（6847）第39脚的CSS信号（控制显示基色）
 Q3 IC15（6847）第35脚的~A/G信号（控制显示模式）
 Q2 磁带记录信号电平
 Q1 未用
 Q0 蜂鸣器A端电平
+
+The individual control signals output are:
+Q5 Buzzer B terminal level
+Q4 IC15（6847）CSS signal at pin 39 (control display base color)
+Q3 IC15（6847）~A/G signal at pin 35 (control display mode)
+Q2 Tape recording signal level
+Q1 Not Connected?
+Q0 Buzzer A terminal level
+
 */
 
 reg		[7:0]		LATCHED_IO_DATA_WR;
@@ -993,7 +1029,7 @@ reg					LATCHED_FLASH_BANK_SW;
 
 `ifdef SHRG
 reg					LATCHED_SHRG_EN;
-reg		[7:0]		LATCHED_IO_SHRG;
+reg		[7:0]		LATCHED_IO_SHRG;		// 7:5 unused, 4:2 = 6847 GM[2:0], 1:0 = VRAM bank (4x2KB) 
 `endif
 
 `ifdef RAM_256K_EXPANSION
@@ -1206,6 +1242,7 @@ always @(posedge BASE_CLK or negedge RESET_N)
 		GPIO_CPU_CLK			<=	1'b0;
 
 		// 复位期间设置，避免拨动开关引起错误
+		// Sampled during reset to avoid the error caused by the switch toggling randomly
 		LATCHED_DOSROM_EN		<=	SWITCH[1];
 
 		LATCHED_BANK_0000		<=	{5'b0,SWITCH[6:4]};
@@ -1220,8 +1257,9 @@ always @(posedge BASE_CLK or negedge RESET_N)
 		LATCHED_FLASH_BANK_SW	<=	1'b0;
 
 `ifdef SHRG
-		LATCHED_IO_SHRG			<=	8'b00001000;
+		LATCHED_IO_SHRG			<=	8'b00001000;		// default to GM 010 mode: 128x64 colour + VRAM BANK 00
 		// 复位期间设置，避免拨动开关引起错误
+		// Sampled during reset to avoid the error caused by the switch toggling randomly
 		LATCHED_SHRG_EN			<=	SWITCH[2];
 `endif
 
@@ -1278,6 +1316,7 @@ always @(posedge BASE_CLK or negedge RESET_N)
 
 		//EMU_CASS_CLK <= 1'b0;
 		CLK						<=	4'd0;
+
 	end
 	else
 	begin
@@ -1285,6 +1324,7 @@ always @(posedge BASE_CLK or negedge RESET_N)
 		4'd0:
 			begin
 				// 同步内存，等待读写信号建立
+				// Synchronize memory, wait for read and write signals to be established
 				CPU_CLK				<=	1'b1;
 				GPIO_CPU_CLK		<=	1'b1;
 
@@ -1297,12 +1337,14 @@ always @(posedge BASE_CLK or negedge RESET_N)
 
 `ifdef RAM_ON_SRAM_CHIP
 				// 异步SRAM内存，等待读写信号建立
+				// Asynchronous SRAM memory, waiting for read and write signals to be established
 				RAM_OE_N			<=	1'b1;
 				RAM_WE_N			<=	1'b1;
 `endif
 
 `ifdef RAM_ON_SSRAM_CHIP
 				// 同步SRAM内存，建立信号，在下个沿锁存地址
+				// Synchronize SRAM memory, establish signal, latch address on next rising edge
 				SSRAM_ADSP_N		<=	1'b0;
 
 				SSRAM_OE_N			<=	1'b1;
@@ -1321,6 +1363,8 @@ always @(posedge BASE_CLK or negedge RESET_N)
 		4'd1:
 			begin
 				// 同步内存，锁存读写信号和地址
+				// Synchronous memory, latch read and write signals and addresses
+				
 				CPU_CLK				<=	1'b0;
 				MEM_OP_WR			<=	1'b0;
 
@@ -1347,6 +1391,8 @@ always @(posedge BASE_CLK or negedge RESET_N)
 
 `ifdef RAM_ON_SRAM_CHIP
 				// 异步SRAM内存，锁存读写信号和地址，使能写信号
+				// Asynchronous SRAM memory, latching read and write signals and addresses, enable write signals
+				
 				if({CPU_MREQ,CPU_RD,CPU_WR,ADDRESS_RAM_CHIP}==4'b1011)
 				begin
 					RAM_OE_N		<=	1'b1;
@@ -1366,9 +1412,11 @@ always @(posedge BASE_CLK or negedge RESET_N)
 				LATCHED_CPU_DO		<=	CPU_DO;
 
 				// 同步SRAM内存 等待1个周期
+				// Synchronize SRAM memory Wait 1 cycle
 				SSRAM_ADSP_N		<=	1'b1;
 
 				// 发送需要写入的数据
+				// Send data out
 				if({CPU_MREQ,CPU_RD,CPU_WR,ADDRESS_RAM_CHIP}==4'b1011)
 					SSRAM_WE_N			<=	1'b0;
 
@@ -1384,6 +1432,7 @@ always @(posedge BASE_CLK or negedge RESET_N)
 		4'd2:
 			begin
 				// 完成读写操作，开始输出
+				// Read and write operations, start output
 				CPU_CLK				<=	1'b0;
 				GPIO_CPU_CLK		<=	~TURBO_SPEED;
 
@@ -1396,6 +1445,9 @@ always @(posedge BASE_CLK or negedge RESET_N)
 				// 进行异步内存读写操作
 				// 读取操作，下个周期可以读取
 				// 写入操作，下个周期完成
+				// Perform asynchronous memory read and write operations
+				// Read operation, can be read in the next cycle
+				// Write operation, completed in the next cycle
 				if({CPU_MREQ,CPU_RD,CPU_WR,ADDRESS_RAM_CHIP}==4'b1101)
 				begin
 					RAM_WE_N		<=	1'b1;
@@ -1410,6 +1462,7 @@ always @(posedge BASE_CLK or negedge RESET_N)
 
 `ifdef RAM_ON_SSRAM_CHIP
 				// 同步SRAM内存 等待1个周期
+				// Synchronize SRAM memory Wait 1 cycle
 				SSRAM_WE_N			<=	1'b1;
 
 
@@ -1426,6 +1479,7 @@ always @(posedge BASE_CLK or negedge RESET_N)
 				else
 				begin
 					// 发送读取命令
+					//Send read command
 					SSRAM_ADSP_N		<=	1'b0;
 
 					SSRAM_OE_N			<=	1'b0;
@@ -1482,14 +1536,18 @@ always @(posedge BASE_CLK or negedge RESET_N)
 
 `ifdef RAM_ON_SRAM_CHIP
 				// 异步SRAM内存，完成了写操作
+				// Asynchronous SRAM memory, complete write operation
 				RAM_WE_N			<=	1'b1;
 				// 不改变读状态
+				// Does not change the read status
 `endif
 
 `ifdef RAM_ON_SSRAM_CHIP
 				// 同步SRAM内存，完成了写操作
+				// Synchronize SRAM memory complete write operation
 				SSRAM_WE_N			<=	1'b1;
 				// 不改变读状态
+				// Does not change the read status
 `endif
 
 				CLK					<=	4'd0;
@@ -1522,6 +1580,7 @@ always @(posedge BASE_CLK or negedge RESET_N)
 
 /*
 // 另一种写法，给 CPU WAIT 信号，等待内存完成操作。
+// Another way to write to the CPU WAIT signal is to wait for the memory to complete the operation.
 
 reg	LATCHED_CPU_WAIT;
 
@@ -1696,10 +1755,10 @@ assign ADDRESS_RAM_16K_EXP	=	(CPU_A[15:12] == 4'hC)?1'b1:
 // 8 9 A B C D E F
 assign ADDRESS_RAM_256K_EXP	=	({LATCHED_BANK_C000[7:4],CPU_A[15]} == 5'b00001);
 
-assign ADDRESS_IO_SHRG		=	(CPU_A[7:0] == 8'd32)?1'b1:1'b0;
+assign ADDRESS_IO_SHRG		=	(CPU_A[7:0] == 8'd32)?1'b1:1'b0;					// I/O $20
 
 // 64K RAM expansion cartridge vz300_review.pdf 中的端口号是 IO 7FH 127
-// 128K SIDEWAYS RAM SHRG2 HVVZUG23 (Mar-Apr 1989).PDF 中的端口号是 IO 112
+// 128K SIDEWAYS RAM SHRG2 HVVZUG23 (Mar-Apr 1989).PDF 中的端口号是 IO 70H 112
 
 assign ADDRESS_IO_BANK	=	(CPU_A[7:0] == 8'd127 || CPU_A[7:0] == 8'd112)?1'b1:1'b0;
 
@@ -1792,8 +1851,19 @@ assign CPU_DI = 	ADDRESS_ROM				? SYS_ROM_DATA			:
 
 
 `ifdef BASE_SYS_ROM
-
 `ifdef FPGA_ALTERA
+`ifdef WIDTH_64
+
+// This ROM is 32KB.
+// Low half is normal V2.0, top half is patched version of V2.0 for 64x16 text mode
+
+sys_rom_altera_64 sys_rom(
+	.address({SWITCH[3],CPU_A[13:0]}),			// SW3 selects 64x16 text mode
+	.clock(BASE_CLK),
+	.q(SYS_ROM_DATA)
+);
+
+`else
 
 sys_rom_altera sys_rom(
 	.address(CPU_A[13:0]),
@@ -1801,6 +1871,7 @@ sys_rom_altera sys_rom(
 	.q(SYS_ROM_DATA)
 );
 
+`endif
 `endif
 
 `endif
@@ -2105,7 +2176,7 @@ vram_altera vram_2k(
 `ifdef FPGA_ALTERA
 
 vram_8k_altera vram_8k(
-	.address_a({LATCHED_IO_SHRG[1:0],CPU_A[10:0]}),
+	.address_a({LATCHED_IO_SHRG[1:0],CPU_A[10:0]}),	// CPU only has a 2KB window for access. 
 	.address_b(VDG_ADDRESS[12:0]),
 	.clock_a(BASE_CLK),
 	.clock_b(VDG_RD),
@@ -2124,23 +2195,24 @@ vram_8k_altera vram_8k(
 
 // Video timing and modes
 MC6847_VGA MC6847_VGA(
-	.PIX_CLK(VGA_CLK),		//25 MHz = 40 nS
+	.PIX_CLK(VGA_CLK),				//25 MHz = 40 nS
 	.RESET_N(RESET_N),
-
-	.RD(VDG_RD),
+	.width_64(SWITCH[3]),			// Switch 3 enables 64x16 text
+	
+	.RD(VDG_RD),						// same as pixel clock
 	.DD(VDG_DATA),
 	.DA(VDG_ADDRESS),
 
-	.AG(LATCHED_IO_DATA_WR[3]),
-	.AS(1'b0),
-	.EXT(1'b0),
-	.INV(1'b0),
+	.AG(LATCHED_IO_DATA_WR[3]),			// _A/G     	_Alphanumeric/Graphics
+	.AS(1'b0),							// _A/S			_Alphanumeric/Semi-Graphics
+	.EXT(1'b0),							// _INT/EXT		_Internal/external 
+	.INV(1'b0),							// INV			0 = normal, 1 = inverse
 `ifdef SHRG
-	.GM(LATCHED_IO_SHRG[4:2]),
+	.GM(LATCHED_IO_SHRG[4:2]),			// GM[2:0]		Select 1 of 8 Gfx modes when _AG == 0
 `else
-	.GM(3'b010),
+	.GM(3'b010),						// fixed graphic 010 mode = 128x64 colour 
 `endif
-	.CSS(LATCHED_IO_DATA_WR[4]),
+	.CSS(LATCHED_IO_DATA_WR[4]),		// CSS			Colour Set Select. 0 = BLACK/GREEN, 1 = BLACK/ORANGE
 
 	// vga
 	.VGA_OUT_HSYNC(VGA_OUT_HS),

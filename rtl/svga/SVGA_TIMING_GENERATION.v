@@ -29,6 +29,7 @@ module SVGA_TIMING_GENERATION
 	line_count,
 
 	show_border,
+	width_64,
 
 	// text
 	subchar_pixel,
@@ -51,12 +52,13 @@ output	reg	[10:0]	pixel_count;		// counts the pixels in a line
 output	reg	[9:0]	line_count;			// counts the display lines
 
 (*keep*)output	reg			show_border;
+input 							width_64;
 
 // 字符控制
-(*keep*)output	reg	[3:0]	subchar_pixel;		// pixel position within the character
-(*keep*)output	reg	[4:0]	subchar_line;		// identifies the line number within a character block
-(*keep*)output	reg	[6:0]	char_column;		// character number on the current line
-(*keep*)output	reg	[6:0]	char_line;			// line number on the screen
+(*keep*)output	reg	[3:0]	subchar_pixel;		// pixel position within the character						0 to 15
+(*keep*)output	reg	[4:0]	subchar_line;		// identifies the line number within a character block		0 to 31
+(*keep*)output	reg	[6:0]	char_column;		// character number on the current line						0 to 128
+(*keep*)output	reg	[6:0]	char_line;			// line number on the screen								0 to 128
 
 // 图形控制 128*64
 (*keep*)output	reg		[8:0]	graph_pixel;
@@ -210,10 +212,16 @@ end
 // 字符点阵 subchar_line subchar_pixel
 // 字符寻址 char_column char_line
 
+// 8x12 dot matrix 32x16 characters 256x192
+// 640x480 times line 512x384 left and right 64 points, up and down 48 points.
+// Need to generate four data values:
+// Character lattice	: subchar_line subchar_pixel
+// Character addressing : char_column char_line
+
 always @ (posedge pixel_clock or posedge reset) begin
 	if (reset)
 		show_pixel <= 1'b0;
-	else if (pixel_count == (-1) + 64 - `SVGA_DECODE_DELAY)
+	else if (pixel_count == (-1) + 64 - `SVGA_DECODE_DELAY)		// decode delay == 4 clocks
 		show_pixel <= 1'b1;
 	else if (pixel_count == (`H_ACTIVE - 1) - 64 - `SVGA_DECODE_DELAY)
 		show_pixel <= 1'b0;
@@ -256,8 +264,20 @@ always @ (posedge pixel_clock or posedge reset) begin
 	else if(show_pixel)
 	begin
 		subchar_pixel <= subchar_pixel + 1;
-		if(subchar_pixel == 4'b1111)			// 8*2-1
-			char_column <= char_column + 1;
+		if (width_64)
+			begin
+				if(subchar_pixel == 4'b0111)			// 8*2-1			64x16
+				begin
+					char_column <= char_column + 1;
+					subchar_pixel <= 4'b0000;
+				end
+			end
+		else
+			if(subchar_pixel == 4'b1111)			// 8*2-1			32x16
+			begin
+				char_column <= char_column + 1;
+				subchar_pixel <= 4'b0000;
+			end
 	end
 end
 
@@ -288,6 +308,8 @@ end
 
 
 // 为所有图形模式提供水平计数
+// Horizontal counting for all graphics modes
+
 always @ (posedge pixel_clock or posedge reset) begin
 	if (reset)
 	begin
@@ -306,6 +328,7 @@ always @ (posedge pixel_clock or posedge reset) begin
 end
 
 // 为图形模式提供垂直计数
+// Vertical count for graphics mode
 // 64x64  4色
 // 128x64  2色
 // 128x64  4色
@@ -329,6 +352,7 @@ always @ (posedge h_synch or posedge reset) begin
 end
 
 // 为图形模式提供垂直计数
+// Vertical count for graphics mode
 // 128x96  2色
 // 128x96  4色
 // 128x192 2色

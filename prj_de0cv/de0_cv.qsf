@@ -142,6 +142,9 @@ set_location_assignment PIN_G2 -to PS2_KBDAT
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to PS2_KBDAT
 set_location_assignment PIN_D3 -to PS2_KBCLK
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to PS2_KBCLK
+set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
+set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_global_assignment -name VERILOG_FILE ../rtl/LASER310_TOP.v
 set_global_assignment -name VERILOG_FILE ../rtl/boot_rom_6000_altera.v
 set_global_assignment -name VERILOG_FILE ../rtl/cass_ram_4k_altera.v
 set_global_assignment -name VERILOG_FILE ../rtl/ram_2k_altera.v
@@ -167,15 +170,14 @@ set_global_assignment -name VERILOG_FILE ../rtl/svga/VIDEO_OUT.v
 set_global_assignment -name VERILOG_FILE ../rtl/svga/SVGA_TIMING_GENERATION.v
 set_global_assignment -name VERILOG_FILE ../rtl/svga/CHAR_GEN_ROM.v
 set_global_assignment -name VERILOG_FILE ../rtl/svga/CHAR_GEN.v
+set_global_assignment -name VERILOG_FILE ../rtl/sys_rom_altera_64.v
 set_global_assignment -name VERILOG_FILE ../rtl/sys_rom_altera.v
 set_global_assignment -name VERILOG_FILE ../rtl/reset_de.v
 set_global_assignment -name VERILOG_FILE ../rtl/ram_altera.v
 set_global_assignment -name VERILOG_FILE ../rtl/mc6847_vga.v
-set_global_assignment -name VERILOG_FILE ../rtl/LASER310_TOP.v
 set_global_assignment -name VERILOG_FILE ../rtl/char_rom_4k_altera.v
+set_global_assignment -name VERILOG_FILE ../rtl/char_rom_4k_lcase_altera.v
 set_global_assignment -name SIGNALTAP_FILE stp1.stp
 set_global_assignment -name QIP_FILE ../rtl/C5_CLK10MHZ_PLL.qip
 set_global_assignment -name SIP_FILE ../rtl/C5_CLK10MHZ_PLL.sip
-set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
-set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
