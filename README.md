@@ -16,6 +16,8 @@ Features implemented:
 8. Buzzer output
 9. PS/2 keyboard support (Ctrl+F12 to reset).
 10. 12.5MHz overclock on SW0
+11. 64x16 Text mode on SW3
+12. 6847T1 Lower Case characters support. Enabled by GM0 bit at Port $20 (Requires SHRG extension on)
 
 ***Planned***
 
