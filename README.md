@@ -69,7 +69,7 @@ SYSTEM-B.vz is a binary file loading/saving tool for cassette/disk on Laser 310.
 
 BASIC_P1.5C.vz is an extended Basic for Laser 310 developed by XinMin Peng in 80's.
 
-MONITORR.vz is an award winning CALL-151 like system monitor tool for Laser 310.
+MONITORR.vz is a Laser 310 system monitor.
 
 More details on these VZ300/Laser310 softwares to follow.
 
