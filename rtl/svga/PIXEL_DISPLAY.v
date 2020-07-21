@@ -99,7 +99,7 @@ always @ (posedge pixel_clock) begin
 			// 对于同步sram需要等待 1 个时钟周期
 			if(subchar_pixel==4'b0011)
 				latched_vram_data <= vram_data;
-			if(graph_pixel[3:0]==4'b0110)
+			if(subchar_pixel==4'b0110)
 				latched_palette_data <= latched_vram_data;
 	end
 	else

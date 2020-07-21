@@ -62,8 +62,8 @@ wire	[7:0]	vga_blue;				// blue video data
 wire 			h_synch;					// horizontal synch for VGA connector
 wire 			v_synch;					// vertical synch for VGA connector
 wire 			blank;						// composite blanking
-wire	[10:0]	pixel_count;				// bit mapped pixel position within the line
-wire	[9:0]	line_count;					// bit mapped line number in a frame lines within the frame
+//wire	[7:0]	pixel_count;				// bit mapped pixel position within the line
+//wire	[9:0]	line_count;					// bit mapped line number in a frame lines within the frame
 
 wire			show_border;
 
@@ -99,7 +99,7 @@ char_rom_4k_altera char_rom(
 );
 */
 
-// 为了防止闪屏，再垂直回扫信号产生时，锁存模式信号。
+// 为了防止闪屏，在垂直回扫信号产生时，锁存模式信号。
 
 always @ (posedge v_synch or negedge RESET_N)
 begin
@@ -159,8 +159,8 @@ SVGA_TIMING_GENERATION SVGA_TIMING_GENERATION
 	h_synch,
 	v_synch,
 	blank,
-	pixel_count,
-	line_count,
+//	pixel_count,
+//	line_count,
 
 	show_border,
 

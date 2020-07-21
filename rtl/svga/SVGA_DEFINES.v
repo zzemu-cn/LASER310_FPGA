@@ -12,11 +12,19 @@ equal the rate specified above the timing block that is uncommented.
 
 
 //  640 X 480 @ 60Hz with a 25.175MHz pixel clock
+/*
 `define H_ACTIVE			640		// pixels
 `define H_FRONT_PORCH		16		// pixels
 `define H_SYNCH				96		// pixels
 `define H_BACK_PORCH		48		// pixels
 `define H_TOTAL				800		// pixels
+*/
+
+`define H_ACTIVE			80		// pixels
+`define H_FRONT_PORCH		2		// pixels
+`define H_SYNCH				12		// pixels
+`define H_BACK_PORCH		6		// pixels
+`define H_TOTAL				100		// pixels
 
 `define V_ACTIVE			480		// lines
 `define V_FRONT_PORCH		11		// lines

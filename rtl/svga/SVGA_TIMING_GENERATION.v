@@ -1,22 +1,16 @@
 `include "SVGA_DEFINES.v"
 
 
-`define SVGA_DECODE_DELAY  7
+//`define SVGA_DECODE_DELAY  7
 // 延时：字符模式
 // 1、(001)锁存 vram 地址，2、(010)读取 vram  3、(011)锁存 vram 数据 4、(100)字库地址 5、(101)锁存字库 
 // 6、(110)移位得到点阵，同时锁存vram数据用于调色板 7、(111)建立调色板，锁存色彩
-
-// Delay: Character mode
-// 1 (001) latch vram address, 2, (010) read vram 3, (011) latch vram data 4, (100) font address 5, (101) latch font
-// 6, (110) shift to get a lattice, while latching vram data for the palette 7, (111) to create a palette, latch color
 
 // 延时：图形模式 128x64 4色
 // 1、(001)锁存 vram 地址，2、(010)读取 vram  3、(011)锁存 vram 数据 4、(100)空 5、(101)数据锁存至移位寄存器
 // 6、(110)移位得到点阵 7、(111)建立调色板，锁存色彩
 
-// Delay: graphics mode 128x64 4 colors
-// 1, (001) latch vram address, 2, (010) read vram 3, (011) latch vram data 4, (100) empty 5, (101) data latched to the shift register
-// 6, (110) shift to get the dot matrix 7, (111) to create a palette, latch color
+`define SVGA_DECODE_DELAY  1
 
 module SVGA_TIMING_GENERATION
 (
@@ -25,8 +19,8 @@ module SVGA_TIMING_GENERATION
 	h_synch,
 	v_synch,
 	blank,
-	pixel_count,
-	line_count,
+//	pixel_count,
+//	line_count,
 
 	show_border,
 
@@ -47,8 +41,11 @@ input 				reset;				// reset
 (*keep*)output	reg			h_synch;			// horizontal synch for VGA connector
 (*keep*)output	reg			v_synch;			// vertical synch for VGA connector
 output	reg			blank;				// composite blanking
-output	reg	[10:0]	pixel_count;		// counts the pixels in a line
-output	reg	[9:0]	line_count;			// counts the display lines
+//output	reg	[10:0]	pixel_count;		// counts the pixels in a line
+//output	reg	[7:0]	pixel_count;		// counts the pixels in a line
+//output	reg	[9:0]	line_count;			// counts the display lines
+reg	[7:0]	pixel_count;		// counts the pixels in a line
+reg	[9:0]	line_count;			// counts the display lines
 
 (*keep*)output	reg			show_border;
 
@@ -71,22 +68,31 @@ reg			v_blank;
 reg			show_pixel;
 reg			show_line;
 
+
+reg	[2:0]	H_count;		// counts the pixels in a line
+always @ (posedge pixel_clock)
+		H_count <= H_count + 1;
+
+wire	H_clock = H_count[2];
+
+
 // CREATE THE HORIZONTAL LINE PIXEL COUNTER
-always @ (posedge pixel_clock or posedge reset) begin
+always @ (posedge H_clock or posedge reset) begin
 	if (reset)
 		// on reset set pixel counter to 0
-		pixel_count <= 11'd0;
+		pixel_count <= 8'd0;
 
 	else if (pixel_count == (`H_TOTAL - 1))
 		// last pixel in the line, so reset pixel counter
-		pixel_count <= 11'd0;
+		pixel_count <= 8'd0;
 
 	else
 		pixel_count <= pixel_count + 1;
 end
 
+
 // CREATE THE HORIZONTAL SYNCH PULSE
-always @ (posedge pixel_clock or posedge reset) begin
+always @ (posedge H_clock or posedge reset) begin
 	if (reset)
 		// on reset remove h_synch
 		h_synch <= 1'b0;
@@ -101,7 +107,7 @@ always @ (posedge pixel_clock or posedge reset) begin
 end
 
 // CREATE THE VERTICAL FRAME LINE COUNTER
-always @ (posedge pixel_clock or posedge reset) begin
+always @ (posedge H_clock or posedge reset) begin
 	if (reset)
 		// on reset set line counter to 0
 		line_count <= 10'd0;
@@ -116,7 +122,7 @@ always @ (posedge pixel_clock or posedge reset) begin
 end
 
 // CREATE THE VERTICAL SYNCH PULSE
-always @ (posedge pixel_clock or posedge reset) begin
+always @ (posedge H_clock or posedge reset) begin
 	if (reset)
 		// on reset remove v_synch
 		v_synch <= 1'b0;
@@ -136,7 +142,7 @@ end
 // CREATE THE HORIZONTAL BLANKING SIGNAL
 // the "-2" is used instead of "-1" because of the extra register delay
 // for the composite blanking signal
-always @ (posedge pixel_clock or posedge reset) begin
+always @ (posedge H_clock or posedge reset) begin
 	if (reset)
 		// on reset remove the h_blank
 		h_blank <= 1'b0;
@@ -154,7 +160,7 @@ end
 // CREATE THE VERTICAL BLANKING SIGNAL
 // the "-2" is used instead of "-1"  in the horizontal factor because of the extra
 // register delay for the composite blanking signal
-always @ (posedge pixel_clock or posedge reset) begin
+always @ (posedge H_clock or posedge reset) begin
 	if (reset)
 		// on reset remove v_blank
 		v_blank <= 1'b0;
@@ -172,7 +178,7 @@ end
 
 
 // CREATE THE COMPOSITE BANKING SIGNAL
-always @ (posedge pixel_clock or posedge reset) begin
+always @ (posedge H_clock or posedge reset) begin
 	if (reset)
 		// on reset remove blank
 		blank <= 1'b0;
@@ -210,12 +216,12 @@ end
 // 字符点阵 subchar_line subchar_pixel
 // 字符寻址 char_column char_line
 
-always @ (posedge pixel_clock or posedge reset) begin
+always @ (posedge H_clock or posedge reset) begin
 	if (reset)
 		show_pixel <= 1'b0;
-	else if (pixel_count == (-1) + 64 - `SVGA_DECODE_DELAY)
+	else if (pixel_count == (-1) + 8 - `SVGA_DECODE_DELAY)
 		show_pixel <= 1'b1;
-	else if (pixel_count == (`H_ACTIVE - 1) - 64 - `SVGA_DECODE_DELAY)
+	else if (pixel_count == (`H_ACTIVE - 1) - 8 - `SVGA_DECODE_DELAY)
 		show_pixel <= 1'b0;
 end
 
@@ -228,12 +234,12 @@ always @ (posedge h_synch or posedge reset) begin
 		show_line <= 1'b0;
 end
 
-always @ (posedge pixel_clock or posedge reset) begin
+always @ (posedge H_clock or posedge reset) begin
 	if (reset)
 		show_border <= 1'b1;
-	else if (pixel_count == (-1) + 64)
+	else if (pixel_count == (-1) + 8)
 		show_border <= ~show_line;
-	else if (pixel_count == (`H_ACTIVE - 1) - 64)
+	else if (pixel_count == (`H_ACTIVE - 1) - 8)
 		show_border <= 1'b1;
 end
 
